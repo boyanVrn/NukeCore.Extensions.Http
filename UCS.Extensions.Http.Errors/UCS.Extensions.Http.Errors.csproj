@@ -1,8 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.0.9</Version>
+    <Authors>Boyko Andrey</Authors>
+    <Company>UCS</Company>
+    <Product>UCS.Extensions.Http</Product>
+    <Description>Custom error exceptions for http</Description>
+    <Copyright>Boyko Andrey</Copyright>
+    <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
   </PropertyGroup>
+  
+  <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="dotnet nuget push -k 86679e1e5f10461fadb6db433db87399 &quot;$(TargetDir)..\$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true"/>
+  </Target>
 
 </Project>
