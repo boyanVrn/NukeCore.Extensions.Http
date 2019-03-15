@@ -3,14 +3,18 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>7.3</LangVersion>
+    <Version>0.0.9</Version>
+    <Authors>Boyko Andrey</Authors>
+    <Company>UCS</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Product>UCS.Extensions.Http</Product>
+    <Description>Configured http client for DI in host services</Description>
+    <Copyright>Boyko Andrey</Copyright>
+    <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\UCS.Extensions.Http\UCS.Extensions.Http.Client.csproj" />
   </ItemGroup>
 
 </Project>

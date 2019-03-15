@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
-using UCS.Extensions.Http.Client;
 
 namespace UCS.Extensions.Http.DependencyInjection
 {
