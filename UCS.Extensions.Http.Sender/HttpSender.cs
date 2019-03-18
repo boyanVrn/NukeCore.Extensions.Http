@@ -38,9 +38,11 @@ namespace UCS.Extensions.Http.Sender
                 return false;
             }
         }
+        public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, string postedData, bool validateResponse = false, CancellationToken cancel = default)
+            => await SendHttpRequest<object>(requestType, apiMethod, string.Empty, validateResponse, cancel);
 
-        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod) where T : class
-            => await SendHttpRequest<T>(requestType, apiMethod, string.Empty, true);
+        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, bool validateResponse = false, CancellationToken cancel = default) where T : class
+            => await SendHttpRequest<T>(requestType, apiMethod, string.Empty, validateResponse, cancel);
 
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, string postedData, bool validateResponse = false, CancellationToken cancel = default)
             where T : class
