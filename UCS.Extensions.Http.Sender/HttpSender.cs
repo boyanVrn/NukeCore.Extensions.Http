@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +49,13 @@ namespace UCS.Extensions.Http.Sender
             }
         }
 
-        protected virtual bool CheckResponse(string src, out string errText)
+        protected virtual async Task CheckResponseStatusCode(HttpResponseMessage src)
+        {
+            if (src.StatusCode != HttpStatusCode.OK)
+                throw new HttpExc(src.StatusCode, await HttpSenderHelper.ExtractBodyAsync(src.Content));
+        }
+
+        protected virtual bool CheckResponseBody(string src, out string errText)
         {
             errText = string.Empty;
             try
@@ -63,40 +69,47 @@ namespace UCS.Extensions.Http.Sender
             }
             catch (JsonReaderException)
             {
+                errText = "Json parse error";
                 return false;
             }
         }
 
-        public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, string postedData, 
+        public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, string postedData,
             bool validateResponse = false, CancellationToken cancel = default)
-                => await SendHttpRequest<string, object>(requestType, apiMethod, string.Empty, null, validateResponse, cancel);
+                => await SendHttpRequest<string, object>(requestType, apiMethod, string.Empty,
+                    (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, string postedData,
             bool validateResponse = false, CancellationToken cancel = default) where T : class
-                => await SendHttpRequest<string, T>(requestType, apiMethod, postedData, null, validateResponse, cancel);
+                => await SendHttpRequest<string, T>(requestType, apiMethod, postedData, 
+                    (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
             bool validateResponse = false, CancellationToken cancel = default) where T : class
-                => await SendHttpRequest<string, T>(requestType, apiMethod, string.Empty, null, validateResponse, cancel);
+                => await SendHttpRequest<string, T>(requestType, apiMethod, string.Empty, 
+                    (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
-        public async Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body, Action<CustomHttpHeaders, JsonSerializerSettings> cfgAction,
-            bool validateResponse = false, CancellationToken cancel = default)
+        public async Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body, 
+            Action<HttpSenderOptions, CustomHttpHeaders> cfgAction, CancellationToken cancel = default)
                 where TResp : class
         {
-            using (var request = new HttpRequestMessage(requestType, apiMethod))
-            {
-                var serializeCfg = new JsonSerializerSettings();
-                var headers = new CustomHttpHeaders();
-                cfgAction?.Invoke(headers, serializeCfg);
+            var uri = new Uri(Client.BaseAddress, apiMethod);
 
-                request.Content = CreateContent(body, serializeCfg);
+            using (var request = new HttpRequestMessage(requestType, uri))
+            {
+                var senderOptions = new HttpSenderOptions();
+                var headers = new CustomHttpHeaders();
+
+                cfgAction?.Invoke(senderOptions, headers);
+
+                request.Content = CreateContent(body, senderOptions.SerializingSettings);
                 request.AppendHeaders(headers);
 
                 HttpResponseMessage response;
 
                 try
                 {
-                    _logger.LogDebug($"Request: [{requestType.ToString().ToUpper()}] {apiMethod}");
+                    _logger.LogDebug($"Request: [{requestType.ToString().ToUpper()}] {uri.AbsoluteUri}");
 
                     response = await Client.SendAsync(request, cancel);
                 }
@@ -115,14 +128,14 @@ namespace UCS.Extensions.Http.Sender
 
                 _logger.LogDebug("Response: " + response.Content);
 
-                await response.CheckStatusCode();
+                await CheckResponseStatusCode(response);
 
                 var bodyAsStr = await HttpSenderHelper.ExtractBodyAsync(response.Content);
 
-                if (validateResponse && CheckResponse(bodyAsStr, out var errMsg))
-                    throw new ExternalException(errMsg);
+                if (senderOptions.ValidateErrorsInResponse && CheckResponseBody(bodyAsStr, out var errMsg))
+                    throw new HttpExc(HttpStatusCode.InternalServerError, errMsg);
 
-                return JsonConvert.DeserializeObject<TResp>(bodyAsStr);
+                return JsonConvert.DeserializeObject<TResp>(bodyAsStr, senderOptions.DeserializingSettings);
             }
         }
     }

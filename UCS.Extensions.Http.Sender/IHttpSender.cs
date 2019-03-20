@@ -2,14 +2,13 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using UCS.Extensions.Http.Sender.Entities;
 
 namespace UCS.Extensions.Http.Sender
 {
     public interface IHttpSender
     {
-        Task SendHttpRequest(HttpMethod requestType, string apiMethod, string postedData, 
+        Task SendHttpRequest(HttpMethod requestType, string apiMethod, string postedData,
             bool validateResponse = false, CancellationToken cancel = default);
 
         Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
@@ -19,8 +18,7 @@ namespace UCS.Extensions.Http.Sender
             bool validateResponse = false, CancellationToken cancel = default) where T : class;
 
         Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body,
-            Action<CustomHttpHeaders, JsonSerializerSettings> cfgAction,
-            bool validateResponse = false, CancellationToken cancel = default)
+            Action<HttpSenderOptions, CustomHttpHeaders> cfgAction, CancellationToken cancel = default)
             where TResp : class;
     }
 }

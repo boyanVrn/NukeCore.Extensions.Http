@@ -6,20 +6,20 @@ namespace UCS.Extensions.Http.Errors
     public class HttpExc : Exception
     {
         public HttpStatusCode Status { get; }
-        public string Body { get; }
 
-        public HttpExc(string message, Exception innerException = null) : base(message, innerException) { }
+        public bool IsClientError { get; }
 
-        public HttpExc(HttpStatusCode status, string body)
+        public HttpExc(string message, Exception innerException = null) : base(message, innerException)
         {
-            Status = status;
-            Body = body;
+            IsClientError = true;
         }
 
-        public HttpExc(HttpStatusCode status, string body, string message, Exception innerException = null) : base(message, innerException)
+        public HttpExc(HttpStatusCode status, string message) : base(message)
         {
             Status = status;
-            Body = body;
         }
+
+        public string BuildErrorMessage() 
+            => IsClientError ? Message : $"Http exception. StatusCode: {(int)Status}. Body: {Message}";
     }
 }
