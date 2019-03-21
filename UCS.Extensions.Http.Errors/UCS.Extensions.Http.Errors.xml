@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UCS.Extensions.Http.Errors</name>
+    </assembly>
+    <members>
+        <member name="T:UCS.Extensions.Http.Errors.HttpExc">
+            <summary>Represents errors that occur during http server and client requst/response.</summary>
+        </member>
+        <member name="P:UCS.Extensions.Http.Errors.HttpExc.IsClientError">
+            <summary>This is client error if flag set.</summary>
+        </member>
+        <member name="M:UCS.Extensions.Http.Errors.HttpExc.#ctor(System.String,System.Exception)">
+            <summary>
+            Used in client error case. Initializes a new instance of the class HttpExc.
+            </summary>
+            <param name="message">Gets a message that describes the current exception.</param>
+            <param name="innerException">An object that describes the error that caused the current exception.</param>
+        </member>
+        <member name="M:UCS.Extensions.Http.Errors.HttpExc.#ctor(System.Net.HttpStatusCode,System.String)">
+            <summary>
+            Used in server error case. Initializes a new instance of the class HttpExc.
+            </summary>
+            <param name="status">Responsed server status code.</param>
+            <param name="message">Gets a message that describes the current exception.</param>
+        </member>
+        <member name="M:UCS.Extensions.Http.Errors.HttpExc.BuildErrorMessage">
+            <summary>
+            Creates and returns string representation of the current exception.
+            </summary>
+            <returns>A string representation of the current exception.</returns>
+        </member>
+    </members>
+</doc>
