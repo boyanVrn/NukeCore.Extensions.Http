@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net40</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.8</Version>
+    <Version>0.1.9</Version>
     <Authors>Boyko Andrey</Authors>
     <Company>UCS</Company>
     <Product>UCS.Extensions.Http</Product>

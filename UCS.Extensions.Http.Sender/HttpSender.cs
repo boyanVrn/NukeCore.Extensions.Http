@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UCS.Extensions.Http.Errors;
-using UCS.Extensions.Http.Sender.Entities;
+using UCS.Extensions.Http.Sender.Settings;
 
 namespace UCS.Extensions.Http.Sender
 {
@@ -24,28 +24,32 @@ namespace UCS.Extensions.Http.Sender
             Client = client;
         }
 
-        private HttpContent CreateContent<T>(T body, JsonSerializerSettings serializeSettings)
+        private static HttpContent CreateContent<T>(T body, JsonSerializerSettings serializeSettings)
         {
             if (body == null) return null;
 
-            if (body is byte[] bytes)
+            switch (body)
             {
-                var content = new ByteArrayContent(bytes);
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                case byte[] bytes:
+                {
+                    var content = new ByteArrayContent(bytes);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                    return content;
+                }
+                case string str:
+                {            
+                    var content = new StringContent(str, Encoding.UTF8);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    return content;
+                }
+                default:
+                {
+                    var postedData = JsonConvert.SerializeObject(body, serializeSettings);
 
-                return content;
-            }
-            else
-            {
-                var postedData = JsonConvert.SerializeObject(body, serializeSettings);
-
-                if (!string.IsNullOrEmpty(postedData))
-                    _logger.LogDebug($"PostedData: {postedData}");
-
-                var content = new StringContent(postedData, Encoding.UTF8);
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                return content;
+                    var content = new StringContent(postedData, Encoding.UTF8);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    return content;
+                }
             }
         }
 
@@ -74,14 +78,15 @@ namespace UCS.Extensions.Http.Sender
             }
         }
 
-        public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, string postedData,
+
+        public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData,
             bool validateResponse = false, CancellationToken cancel = default)
-                => await SendHttpRequest<string, object>(requestType, apiMethod, string.Empty,
+                => await SendHttpRequest<object, object>(requestType, apiMethod, postedData,
                     (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
-        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, string postedData,
+        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData,
             bool validateResponse = false, CancellationToken cancel = default) where T : class
-                => await SendHttpRequest<string, T>(requestType, apiMethod, postedData, 
+                => await SendHttpRequest<object, T>(requestType, apiMethod, postedData, 
                     (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
@@ -125,12 +130,12 @@ namespace UCS.Extensions.Http.Sender
                 {
                     throw new HttpExc(ex.Message, ex.InnerException);
                 }
-
-                _logger.LogDebug("Response: " + response.Content);
-
+                 
                 await CheckResponseStatusCode(response);
 
                 var bodyAsStr = await HttpSenderHelper.ExtractBodyAsync(response.Content);
+
+                _logger.LogDebug("Response: " + bodyAsStr);
 
                 if (senderOptions.ValidateErrorsInResponse && CheckResponseBody(bodyAsStr, out var errMsg))
                     throw new HttpExc(HttpStatusCode.InternalServerError, errMsg);

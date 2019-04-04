@@ -2,14 +2,13 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using UCS.Extensions.Http.Sender.Entities;
+using UCS.Extensions.Http.Sender.Settings;
+
 
 namespace UCS.Extensions.Http.Sender
 {
     public static class HttpSenderHelper
     {
-        public static async Task<string> ExtractBodyAsync(HttpContent content) => content == null ? string.Empty : Encoding.UTF8.GetString(await content.ReadAsByteArrayAsync());
-
         public static void AppendHeaders(this HttpRequestMessage src, CustomHttpHeaders headersEx)
         {
             foreach (var h in headersEx)
@@ -18,5 +17,9 @@ namespace UCS.Extensions.Http.Sender
                 src.Headers.Add(h.Key, h.Value);
             }
         }
+        public static async Task<string> ExtractBodyAsync(HttpContent content) => content == null
+            ? string.Empty
+            : Encoding.UTF8.GetString(await content.ReadAsByteArrayAsync());
+
     }
 }

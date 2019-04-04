@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace UCS.Extensions.Http.Sender.Entities
+namespace UCS.Extensions.Http.Sender.Settings
 {
 
     public class CustomHttpHeaders : Dictionary<string, List<string>>

@@ -2,19 +2,19 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using UCS.Extensions.Http.Sender.Entities;
+using UCS.Extensions.Http.Sender.Settings;
 
 namespace UCS.Extensions.Http.Sender
 {
     public interface IHttpSender
     {
-        Task SendHttpRequest(HttpMethod requestType, string apiMethod, string postedData,
+        Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData,
             bool validateResponse = false, CancellationToken cancel = default);
 
         Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
             bool validateResponse = false, CancellationToken cancel = default) where T : class;
 
-        Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, string postedData,
+        Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData,
             bool validateResponse = false, CancellationToken cancel = default) where T : class;
 
         Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body,
