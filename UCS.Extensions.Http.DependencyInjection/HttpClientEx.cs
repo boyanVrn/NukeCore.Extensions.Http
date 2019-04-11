@@ -1,27 +1,25 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Net.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace UCS.Extensions.Http.DependencyInjection
 {
 
     public static class HttpClientExtension
     {
-        public static IServiceCollection AddConfiguredHttpClient<TClient, TImplementation, THttpClientHandler>(this IServiceCollection services, Action<HttpClientOptionsProvider, THttpClientHandler> cfgAction)
+        public static IServiceCollection AddConfiguredHttpClient<TClient, TImplementation>(this IServiceCollection services, Action<HttpClientOptionsProvider> cfgAction)
             where TClient : class
             where TImplementation : class, TClient
-            where THttpClientHandler : HttpClientHandler, new()
         {
             if (cfgAction == null)
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
 
             var cfg = new HttpClientOptionsProvider();
-            var handler = new THttpClientHandler();
-           
-            cfgAction.Invoke(cfg, handler);
+
+            cfgAction.Invoke(cfg);
 
             if (cfg.BaseAddress == null)
-                throw new NullReferenceException();
+                throw new ArgumentNullException();
 
             return services
                 .AddHttpClient<TClient, TImplementation>()
@@ -29,9 +27,22 @@ namespace UCS.Extensions.Http.DependencyInjection
                     (sp, options) =>
                     {
                         options.BaseAddress = cfg.BaseAddress;
+                        options.Timeout = cfg.Timeout;
                         cfg.DefaultRequestHeaders.ForEach(h => options.DefaultRequestHeaders.Accept.Add(h));
                     })
-                .ConfigurePrimaryHttpMessageHandler(x => handler)
+                .ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    var handler = new HttpClientHandler
+                    {
+                        UseProxy = cfg.HasProxy,
+                        Credentials = cfg.Credentials,
+                        AutomaticDecompression = cfg.ResponseAutoDecompressionType
+                    };
+
+                    if (!cfg.HasServerCertificateValidation) handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+
+                    return handler;
+                })
                 .Services;
         }
     }
