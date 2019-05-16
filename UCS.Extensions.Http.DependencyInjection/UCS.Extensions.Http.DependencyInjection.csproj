@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>7.3</LangVersion>
-    <Version>0.2.1</Version>
+    <Version>0.2.5</Version>
     <Authors>Boyko Andrey</Authors>
     <Company>UCS</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -11,12 +12,21 @@
     <Description>Configured http client for DI in host services</Description>
     <Copyright>Boyko Andrey</Copyright>
     <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
-    <AssemblyVersion>0.2.1.0</AssemblyVersion>
-    <FileVersion>0.2.1.0</FileVersion>
+    <AssemblyVersion>0.2.5.0</AssemblyVersion>
+    <FileVersion>0.2.5.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>D:\Work\Dev\Projects\UCS RND Nuget\UcsExtensions\UCS.Extensions.Http\UCS.Extensions.Http.DependencyInjection\UCS.Extensions.Http.DependencyInjection.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UCS.Extensions.Http.Models\UCS.Extensions.Http.Models.csproj" />
+    <ProjectReference Include="..\UCS.Extensions.Http.Sender\UCS.Extensions.Http.Sender.csproj" />
   </ItemGroup>
   
   <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">

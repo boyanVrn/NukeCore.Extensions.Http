@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 
-namespace UCS.Extensions.Http.Sender.Settings
+namespace UCS.Extensions.Http.Models.Additional
 {
 
     public class CustomHttpHeaders : Dictionary<string, List<string>>
@@ -20,6 +21,14 @@ namespace UCS.Extensions.Http.Sender.Settings
             if (ContainsKey(name)) Remove(name);
 
             Add(name, value);
+        }
+
+        public void CopyTo(HttpRequestHeaders httpRequestHeaders)
+        {
+            foreach (var header in this)
+            {
+                httpRequestHeaders.Add(header.Key, header.Value);
+            }
         }
     }
 }

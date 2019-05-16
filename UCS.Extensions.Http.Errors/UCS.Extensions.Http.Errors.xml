@@ -5,12 +5,19 @@
     </assembly>
     <members>
         <member name="T:UCS.Extensions.Http.Errors.HttpExc">
+            <inheritdoc />
             <summary>Represents errors that occur during http server and client requst/response.</summary>
+        </member>
+        <member name="P:UCS.Extensions.Http.Errors.HttpExc.Status">
+            <summary>
+            Contains the value of request/responce message status code 
+            </summary>
         </member>
         <member name="P:UCS.Extensions.Http.Errors.HttpExc.IsClientError">
             <summary>This is client error if flag set.</summary>
         </member>
         <member name="M:UCS.Extensions.Http.Errors.HttpExc.#ctor(System.String,System.Exception)">
+            <inheritdoc />
             <summary>
             Used in client error case. Initializes a new instance of the class HttpExc.
             </summary>
@@ -18,6 +25,7 @@
             <param name="innerException">An object that describes the error that caused the current exception.</param>
         </member>
         <member name="M:UCS.Extensions.Http.Errors.HttpExc.#ctor(System.Net.HttpStatusCode,System.String)">
+            <inheritdoc />
             <summary>
             Used in server error case. Initializes a new instance of the class HttpExc.
             </summary>

@@ -5,8 +5,19 @@ using System.Net.Http;
 namespace UCS.Extensions.Http.DependencyInjection
 {
 
+    /// <summary>
+    /// Custom http client extended methods repository
+    /// </summary>
     public static class HttpClientExtension
     {
+        /// <summary>
+        /// register new configured http client factory to host services
+        /// </summary>
+        /// <param name="services">host services list</param>
+        /// <param name="cfgAction">HttpClientOptionsProvider action</param>
+        /// <typeparam name="TClient">Sender class type</typeparam>
+        /// <typeparam name="TImplementation">Sender implementation interface</typeparam>
+        /// <exception cref="ArgumentNullException">wrong configuration params</exception>
         public static IServiceCollection AddConfiguredHttpClient<TClient, TImplementation>(this IServiceCollection services, Action<HttpClientOptionsProvider> cfgAction)
             where TClient : class
             where TImplementation : class, TClient
@@ -28,7 +39,8 @@ namespace UCS.Extensions.Http.DependencyInjection
                     {
                         options.BaseAddress = cfg.BaseAddress;
                         options.Timeout = cfg.Timeout;
-                        cfg.DefaultRequestHeaders.ForEach(h => options.DefaultRequestHeaders.Accept.Add(h));
+                        cfg.AcceptHeaders.ForEach(h => options.DefaultRequestHeaders.Accept.Add(h));
+                        cfg.RequestHeaders.CopyTo(options.DefaultRequestHeaders);
                     })
                 .ConfigurePrimaryHttpMessageHandler(() =>
                 {

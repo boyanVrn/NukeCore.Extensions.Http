@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace UCS.Extensions.Http.Sender.Settings
+namespace UCS.Extensions.Http.Sender
 {
     public class HttpSenderOptions
     {

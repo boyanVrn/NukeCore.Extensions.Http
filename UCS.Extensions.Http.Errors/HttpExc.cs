@@ -4,14 +4,19 @@ using System.Net;
 namespace UCS.Extensions.Http.Errors
 {
 
-    ///<summary>Represents errors that occur during http server and client requst/response.</summary>
+    /// <inheritdoc />
+    /// <summary>Represents errors that occur during http server and client requst/response.</summary>
     public class HttpExc : Exception
     {
+        /// <summary>
+        /// Contains the value of request/responce message status code 
+        /// </summary>
         public HttpStatusCode Status { get; }
 
         /// <summary>This is client error if flag set.</summary>
         public bool IsClientError { get; }
 
+        /// <inheritdoc />
         /// <summary>
         /// Used in client error case. Initializes a new instance of the class HttpExc.
         /// </summary>
@@ -22,6 +27,7 @@ namespace UCS.Extensions.Http.Errors
             IsClientError = true;
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Used in server error case. Initializes a new instance of the class HttpExc.
         /// </summary>
