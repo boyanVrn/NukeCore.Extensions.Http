@@ -96,17 +96,28 @@ namespace UCS.Extensions.Http.Sender
             Action<HttpSenderOptions, CustomHttpHeaders> cfgAction, CancellationToken cancel = default)
                 where TResp : class
         {
+            var options = new HttpSenderOptions();
+            var headers = new CustomHttpHeaders();
+
+            cfgAction?.Invoke(options, headers);
+
+            var content = CreateContent(body, options.SerializingSettings);
+            return await SendHttpRequest<TResp>(requestType, apiMethod, content, headers, options, cancel);
+        }
+
+        /// <inheritdoc />
+        public async Task<TResp> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content,
+        CustomHttpHeaders headers = default, HttpSenderOptions options = default, CancellationToken cancel = default)
+            where TResp : class
+        {
             var uri = new Uri(Client.BaseAddress, apiMethod);
+            var senderOptions = options ?? new HttpSenderOptions();
+            var senderHeaders = headers ?? new CustomHttpHeaders();
 
             using (var request = new HttpRequestMessage(requestType, uri))
             {
-                var senderOptions = new HttpSenderOptions();
-                var headers = new CustomHttpHeaders();
-
-                cfgAction?.Invoke(senderOptions, headers);
-
-                request.Content = CreateContent(body, senderOptions.SerializingSettings);
-                request.AppendHeaders(headers);
+                request.Content = content;
+                request.AppendHeaders(senderHeaders);
 
                 try
                 {
@@ -152,25 +163,25 @@ namespace UCS.Extensions.Http.Sender
             switch (body)
             {
                 case byte[] bytes:
-                {
-                    var content = new ByteArrayContent(bytes);
-                    content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                    return content;
-                }
+                    {
+                        var content = new ByteArrayContent(bytes);
+                        content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                        return content;
+                    }
                 case string str:
-                {
-                    var content = new StringContent(str, Encoding.UTF8);
-                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    return content;
-                }
+                    {
+                        var content = new StringContent(str, Encoding.UTF8);
+                        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                        return content;
+                    }
                 default:
-                {
-                    var postedData = JsonConvert.SerializeObject(body, serializeSettings);
+                    {
+                        var postedData = JsonConvert.SerializeObject(body, serializeSettings);
 
-                    var content = new StringContent(postedData, Encoding.UTF8);
-                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    return content;
-                }
+                        var content = new StringContent(postedData, Encoding.UTF8);
+                        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                        return content;
+                    }
             }
         }
     }

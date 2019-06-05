@@ -61,6 +61,21 @@ namespace UCS.Extensions.Http.Sender
         /// <returns>class or exception</returns>
         Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body,
             Action<HttpSenderOptions, CustomHttpHeaders> cfgAction, CancellationToken cancel = default)
-            where TResp : class;
+                where TResp : class;
+
+        /// <summary>
+        /// base extended http send method. use then need flex custom tuning
+        /// </summary>
+        /// <param name="requestType"></param>
+        /// <param name="apiMethod"></param>
+        /// <param name="content"></param>
+        /// <param name="headers"></param>
+        /// <param name="options"></param>
+        /// <param name="cancel"></param>
+        /// <typeparam name="TResp"></typeparam>
+        /// <returns></returns>
+        Task<TResp> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content,
+            CustomHttpHeaders headers = default, HttpSenderOptions options = default, CancellationToken cancel = default) 
+                where TResp : class;
     }
 }

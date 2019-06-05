@@ -31,5 +31,8 @@
         }
 
         protected virtual bool IsNotOkError(TError error) => true;
+
+        public static ApiResponseBase<TData, TError> CreteInstance(TData data) => new ApiResponseBase<TData, TError>(data);
+        public static ApiResponseBase<TData, TError> CreteInstance(TError error) => new ApiResponseBase<TData, TError>(error);
     }
 }

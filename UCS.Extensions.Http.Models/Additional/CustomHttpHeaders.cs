@@ -30,5 +30,29 @@ namespace UCS.Extensions.Http.Models.Additional
                 httpRequestHeaders.Add(header.Key, header.Value);
             }
         }
+
+        public static CustomHttpHeaders CreateFrom(HttpRequestHeaders headers)
+        {
+            var result = new CustomHttpHeaders();
+
+            foreach (var header in headers)
+            {
+                result.AddOrUpdate(header.Key, header.Value.ToList());
+            }
+
+            return result;
+        }
+
+        public static CustomHttpHeaders CreateFrom(IEnumerable<KeyValuePair<string, IEnumerable<string>>> headers)
+        {
+            var result = new CustomHttpHeaders();
+
+            foreach (var header in headers)
+            {
+                result.AddOrUpdate(header.Key, header.Value.ToList());
+            }
+
+            return result;
+        }
     }
 }
