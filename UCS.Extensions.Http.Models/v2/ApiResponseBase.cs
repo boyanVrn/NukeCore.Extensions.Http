@@ -12,6 +12,7 @@
             get => _error;
             set
             {
+                if (value == null) return;
                 HasError = IsNotOkError(value);
                 _error = value;
             }
@@ -32,7 +33,8 @@
 
         protected virtual bool IsNotOkError(TError error) => true;
 
-        public static ApiResponseBase<TData, TError> CreteInstance(TData data) => new ApiResponseBase<TData, TError>(data);
-        public static ApiResponseBase<TData, TError> CreteInstance(TError error) => new ApiResponseBase<TData, TError>(error);
+        public static ApiResponseBase<TData, TError> CreateInstance(TData data) => new ApiResponseBase<TData, TError>(data);
+        public static ApiResponseBase<TData, TError> CreateInstance(TError error) => new ApiResponseBase<TData, TError>(error);
+        public static ApiResponseBase<TData, TError> CreateInstance(TData data, TError error) => new ApiResponseBase<TData, TError> { Data = data, Error = error };
     }
 }
