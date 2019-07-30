@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿#if NETSTANDARD
+using Microsoft.Extensions.Logging;
+#endif
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -22,6 +25,7 @@ namespace UCS.Extensions.Http.Sender
         /// injected http client
         /// </summary>
         public HttpClient Client { get; }
+#if NETSTANDARD
         private readonly ILogger _logger;
 
         /// <summary>
@@ -34,7 +38,12 @@ namespace UCS.Extensions.Http.Sender
             _logger = logger;
             Client = client;
         }
+#endif
 
+        public HttpSender(HttpClient client)
+        {
+            Client = client;
+        }
 
         /// <summary>
         /// validate http code in responce, in base valid only 200
@@ -76,25 +85,25 @@ namespace UCS.Extensions.Http.Sender
         /// <inheritdoc />
         public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData,
             bool validateResponse = false, CancellationToken cancel = default)
-                => await SendHttpRequest<object, object>(requestType, apiMethod, postedData,
-                    (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
+            => await SendHttpRequest<object, object>(requestType, apiMethod, postedData,
+                (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         /// <inheritdoc />
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData,
             bool validateResponse = false, CancellationToken cancel = default) where T : class
-                => await SendHttpRequest<object, T>(requestType, apiMethod, postedData,
-                    (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
+            => await SendHttpRequest<object, T>(requestType, apiMethod, postedData,
+                (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         /// <inheritdoc />
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
             bool validateResponse = false, CancellationToken cancel = default) where T : class
-                => await SendHttpRequest<string, T>(requestType, apiMethod, string.Empty,
-                    (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
+            => await SendHttpRequest<string, T>(requestType, apiMethod, string.Empty,
+                (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         /// <inheritdoc />
         public async Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body,
             Action<HttpSenderOptions, CustomHttpHeaders> cfgAction, CancellationToken cancel = default)
-                where TResp : class
+            where TResp : class
         {
             var options = new HttpSenderOptions();
             var headers = new CustomHttpHeaders();
@@ -107,7 +116,7 @@ namespace UCS.Extensions.Http.Sender
 
         /// <inheritdoc />
         public async Task<TResp> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content,
-        CustomHttpHeaders headers = default, HttpSenderOptions options = default, CancellationToken cancel = default)
+            CustomHttpHeaders headers = default, HttpSenderOptions options = default, CancellationToken cancel = default)
             where TResp : class
         {
             var uri = new Uri(Client.BaseAddress, apiMethod);
@@ -121,15 +130,18 @@ namespace UCS.Extensions.Http.Sender
 
                 try
                 {
+#if NETSTANDARD
                     _logger.LogDebug($"Request: [{requestType.ToString().ToUpper()}] {uri.AbsoluteUri}");
+#endif
 
                     var response = await Client.SendAsync(request, cancel);
 
                     await CheckResponseStatusCode(response);
 
                     var bodyAsStr = await HttpSenderHelper.ExtractBodyAsync(response.Content);
-
+#if NETSTANDARD
                     _logger.LogDebug("Response: " + bodyAsStr);
+#endif
 
                     if (senderOptions.ValidateErrorsInResponse && HasErrorInResponseBody(bodyAsStr, out var errMsg))
                         throw new HttpExc(HttpStatusCode.InternalServerError, errMsg);
@@ -152,7 +164,6 @@ namespace UCS.Extensions.Http.Sender
                 {
                     throw new HttpExc(ex.Message, ex.InnerException);
                 }
-
             }
         }
 
@@ -163,25 +174,27 @@ namespace UCS.Extensions.Http.Sender
             switch (body)
             {
                 case byte[] bytes:
-                    {
-                        var content = new ByteArrayContent(bytes);
-                        content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                        return content;
-                    }
-                case string str:
-                    {
-                        var content = new StringContent(str, Encoding.UTF8);
-                        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                        return content;
-                    }
-                default:
-                    {
-                        var postedData = JsonConvert.SerializeObject(body, serializeSettings);
+                {
+                    var content = new ByteArrayContent(bytes);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+                    return content;
+                }
 
-                        var content = new StringContent(postedData, Encoding.UTF8);
-                        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                        return content;
-                    }
+                case string str:
+                {
+                    var content = new StringContent(str, Encoding.UTF8);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    return content;
+                }
+
+                default:
+                {
+                    var postedData = JsonConvert.SerializeObject(body, serializeSettings);
+
+                    var content = new StringContent(postedData, Encoding.UTF8);
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                    return content;
+                }
             }
         }
     }

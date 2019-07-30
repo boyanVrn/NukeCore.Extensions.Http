@@ -1,22 +1,36 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>7.3</LangVersion>
-    <Version>0.3.3</Version>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Boyko Andrey</Authors>
-    <Product>UCS.Extensions.Http</Product>
-    <Company>UCS</Company>
-    <Description>Request and response models for http sending</Description>
-    <Copyright>Boyko Andrey</Copyright>
-    <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
-    <AssemblyVersion>0.3.3.0</AssemblyVersion>
-    <FileVersion>0.3.3.0</FileVersion>
-  </PropertyGroup>
-  
-  <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="dotnet nuget push -k 86679e1e5f10461fadb6db433db87399 &quot;$(TargetDir)..\$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true" />
-  </Target>
+    <PropertyGroup>
+        <LangVersion>7.3</LangVersion>
+        <Version>0.3.3</Version>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Boyko Andrey</Authors>
+        <Product>UCS.Extensions.Http</Product>
+        <Company>UCS</Company>
+        <Description>Request and response models for http sending</Description>
+        <Copyright>Boyko Andrey</Copyright>
+        <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
+        <AssemblyVersion>0.3.3.0</AssemblyVersion>
+        <FileVersion>0.3.3.0</FileVersion>
+        <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' != 'net40'">
+        <PackageReference Include="Microsoft.Net.Http">
+            <Version>2.2.29</Version>
+        </PackageReference>
+        <PackageReference Include="System.Net.Http">
+            <Version>2.0.20710</Version>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
+        <PackageReference Include="System.Net.Http">
+        </PackageReference>
+    </ItemGroup>
+
+    <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
+        <Exec Command="dotnet nuget push -k 86679e1e5f10461fadb6db433db87399 &quot;$(TargetDir)..\$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true"/>
+    </Target>
 
 </Project>
