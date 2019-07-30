@@ -18,21 +18,22 @@
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net40'">
         <PackageReference Include="Microsoft.Bcl" Version="1.1.10"/>
-
         <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168"/>
-
         <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.14"/>
+        <PackageReference Include="Microsoft.Net.Http" Version="2.2.29"/>
+        <PackageReference Include="System.Net.Http" Version="2.0.20126.16343"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="Microsoft.Extensions.Logging"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0"/>
+        <PackageReference Include="System.Net.Http" Version="4.3.4"/>
 
     </ItemGroup>
-    
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DocumentationFile>D:\Work\Dev\Projects\UCS RND Nuget\UcsExtensions\UCS.Extensions.Http\UCS.Extensions.Http.Sender\UCS.Extensions.Http.Sender.xml</DocumentationFile>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="12.0.1"/>
         <PackageReference Include="UCS.CryptoHelper" Version="1.0.9"/>
