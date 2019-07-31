@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <LangVersion>7.3</LangVersion>
-        <Version>0.3.5</Version>
+        <Version>0.3.6</Version>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Boyko Andrey</Authors>
         <Product>UCS.Extensions.Http</Product>
@@ -10,8 +10,8 @@
         <Description>Request and response models for http sending</Description>
         <Copyright>Boyko Andrey</Copyright>
         <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
-        <AssemblyVersion>0.3.5.0</AssemblyVersion>
-        <FileVersion>0.3.5.0</FileVersion>
+        <AssemblyVersion>0.3.6.0</AssemblyVersion>
+        <FileVersion>0.3.6.0</FileVersion>
         <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
     </PropertyGroup>
 
