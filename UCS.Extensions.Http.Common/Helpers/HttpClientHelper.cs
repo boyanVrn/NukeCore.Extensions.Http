@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace UCS.Extensions.Http.DependencyInjection
+namespace UCS.Extensions.Http.Common.Helpers
 {
 
     /// <summary>
     /// additional static methods
     /// </summary>
-    internal static class HttpClientHelper
+    public static class HttpClientHelper
     {
         private const string Slash = "/";
 
@@ -17,7 +17,7 @@ namespace UCS.Extensions.Http.DependencyInjection
         /// </summary>
         /// <param name="src">input address</param>
         /// <returns>modify address </returns>
-        internal static Uri AppendSlash(this Uri src)
+        public static Uri AppendSlash(Uri src)
         {
             if (src == null) return null;
             return src.AbsoluteUri.EndsWith(Slash) ? src : new Uri(src.AbsoluteUri + Slash);

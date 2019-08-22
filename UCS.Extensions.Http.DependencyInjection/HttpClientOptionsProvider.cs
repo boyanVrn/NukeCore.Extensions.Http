@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Headers;
-using UCS.Extensions.Http.Models.Additional;
+using UCS.Extensions.Http.Common.Helpers;
+using UCS.Extensions.Http.Common.Models;
+
 
 namespace UCS.Extensions.Http.DependencyInjection
 {
@@ -15,7 +17,7 @@ namespace UCS.Extensions.Http.DependencyInjection
         public Uri BaseAddress
         {
             get => _baseAddress;
-            set => _baseAddress = value.AppendSlash();
+            set => _baseAddress = HttpClientHelper.AppendSlash(value);
         }
 
         public NetworkCredential Credentials { get; private set; }
@@ -24,6 +26,7 @@ namespace UCS.Extensions.Http.DependencyInjection
         public bool HasProxy { get; private set; }
         public bool HasServerCertificateValidation { get; private set; }
         public DecompressionMethods ResponseAutoDecompressionType { get; private set; }
+        public HttpSenderOptions SenderOptions { get; private set; }
 
         public HttpClientOptionsProvider()
         {
@@ -34,6 +37,7 @@ namespace UCS.Extensions.Http.DependencyInjection
 
             AcceptHeaders = new List<MediaTypeWithQualityHeaderValue>();
             RequestHeaders = new CustomHttpHeaders();
+            SenderOptions = new HttpSenderOptions();
         }
 
         public List<MediaTypeWithQualityHeaderValue> AcceptHeaders { get; }
@@ -75,6 +79,14 @@ namespace UCS.Extensions.Http.DependencyInjection
         {
             HasServerCertificateValidation = false;
             //ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+        }
+
+        public void ConfigureSenderOptions(Action<HttpSenderOptions> senderOptAction)
+        {
+            var so = new HttpSenderOptions();
+            senderOptAction.Invoke(so);
+
+            SenderOptions = so;
         }
 
     }

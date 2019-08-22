@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
+using UCS.Extensions.Http.Common.Models;
 
 namespace UCS.Extensions.Http.DependencyInjection
 {
@@ -32,6 +33,8 @@ namespace UCS.Extensions.Http.DependencyInjection
             if (cfg.BaseAddress == null)
                 throw new ArgumentNullException();
 
+            services.AddSingleton(cfg.SenderOptions);
+
             return services
                 .AddHttpClient<TClient, TImplementation>()
                 .ConfigureHttpClient(
@@ -51,7 +54,8 @@ namespace UCS.Extensions.Http.DependencyInjection
                         AutomaticDecompression = cfg.ResponseAutoDecompressionType
                     };
 
-                    if (!cfg.HasServerCertificateValidation) handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+                    if (!cfg.HasServerCertificateValidation)
+                        handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
 
                     return handler;
                 })

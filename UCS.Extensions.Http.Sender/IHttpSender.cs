@@ -2,7 +2,8 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using UCS.Extensions.Http.Models.Additional;
+using UCS.Extensions.Http.Common;
+using UCS.Extensions.Http.Common.Models;
 
 namespace UCS.Extensions.Http.Sender
 {

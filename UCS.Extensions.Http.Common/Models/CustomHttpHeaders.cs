@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net.Http.Headers;
 
-namespace UCS.Extensions.Http.Models.Additional
+namespace UCS.Extensions.Http.Common.Models
 {
 
     public class CustomHttpHeaders : Dictionary<string, List<string>>

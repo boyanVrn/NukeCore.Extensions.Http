@@ -117,15 +117,3 @@
         </member>
     </members>
 </doc>
-   </summary>
-            <param name="requestType"></param>
-            <param name="apiMethod"></param>
-            <param name="content"></param>
-            <param name="headers"></param>
-            <param name="options"></param>
-            <param name="cancel"></param>
-            <typeparam name="TResp"></typeparam>
-            <returns></returns>
-        </member>
-    </members>
-</doc>

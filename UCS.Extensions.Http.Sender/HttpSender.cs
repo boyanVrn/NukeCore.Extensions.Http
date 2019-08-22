@@ -11,8 +11,10 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UCS.Extensions.Http.Common;
+using UCS.Extensions.Http.Common.Helpers;
+using UCS.Extensions.Http.Common.Models;
 using UCS.Extensions.Http.Errors;
-using UCS.Extensions.Http.Models.Additional;
 
 namespace UCS.Extensions.Http.Sender
 {
@@ -40,6 +42,9 @@ namespace UCS.Extensions.Http.Sender
         }
 #endif
 
+        /// <summary>
+        /// constructor, create new instance of HttpSender, without logger
+        /// </summary>
         public HttpSender(HttpClient client)
         {
             Client = client;
