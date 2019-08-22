@@ -19,17 +19,5 @@
             <typeparam name="TImplementation">Sender implementation interface</typeparam>
             <exception cref="T:System.ArgumentNullException">wrong configuration params</exception>
         </member>
-        <member name="T:UCS.Extensions.Http.DependencyInjection.HttpClientHelper">
-            <summary>
-            additional static methods
-            </summary>
-        </member>
-        <member name="M:UCS.Extensions.Http.DependencyInjection.HttpClientHelper.AppendSlash(System.Uri)">
-            <summary>
-            Add slash in the end of http address string if not exist
-            </summary>
-            <param name="src">input address</param>
-            <returns>modify address </returns>
-        </member>
     </members>
 </doc>

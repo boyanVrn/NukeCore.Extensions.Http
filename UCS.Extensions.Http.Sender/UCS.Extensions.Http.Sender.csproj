@@ -11,8 +11,8 @@
         <Description>Abstract http sender with transport errors handling</Description>
         <Copyright>Boyko Andrey</Copyright>
         <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
-        <AssemblyVersion>0.3.6.0</AssemblyVersion>
-        <FileVersion>0.3.6.0</FileVersion>
+        <AssemblyVersion>0.4.0.0</AssemblyVersion>
+        <FileVersion>0.4.0.0</FileVersion>
         <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
     </PropertyGroup>
 
