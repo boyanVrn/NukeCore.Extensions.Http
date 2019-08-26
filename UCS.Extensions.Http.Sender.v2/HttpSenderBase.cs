@@ -80,19 +80,19 @@ namespace UCS.Extensions.Http.Sender.v2
 
         /// <inheritdoc/>
         public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData,
-            bool validateResponse = false, CancellationToken cancel = default)
+            bool validateResponse = true, CancellationToken cancel = default)
             => await SendHttpRequest<object, object>(requestType, apiMethod, postedData,
                 (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         /// <inheritdoc/>
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData,
-            bool validateResponse = false, CancellationToken cancel = default) where T : class
+            bool validateResponse = true, CancellationToken cancel = default) where T : class
             => await SendHttpRequest<object, T>(requestType, apiMethod, postedData,
                 (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         /// <inheritdoc/>
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
-            bool validateResponse = false, CancellationToken cancel = default) where T : class
+            bool validateResponse = true, CancellationToken cancel = default) where T : class
             => await SendHttpRequest<string, T>(requestType, apiMethod, string.Empty,
                 (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 

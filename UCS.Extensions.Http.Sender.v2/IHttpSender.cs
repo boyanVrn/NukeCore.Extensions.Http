@@ -21,7 +21,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="cancel">cancel query token</param>
         /// <returns>void or exception</returns>
         Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData,
-            bool validateResponse = false, CancellationToken cancel = default);
+            bool validateResponse = true, CancellationToken cancel = default);
 
         /// <summary>
         /// use in case when request body is not exists, but response body is needed
@@ -33,7 +33,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <typeparam name="T">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
         Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
-            bool validateResponse = false, CancellationToken cancel = default) where T : class;
+            bool validateResponse = true, CancellationToken cancel = default) where T : class;
 
         /// <summary>
         /// use in case when request body exists, and response body needed too
@@ -46,7 +46,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <typeparam name="T">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
         Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData,
-            bool validateResponse = false, CancellationToken cancel = default) where T : class;
+            bool validateResponse = true, CancellationToken cancel = default) where T : class;
 
         /// <summary>
         /// base extended http send method. use then need flex custom tuning
