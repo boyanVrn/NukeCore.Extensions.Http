@@ -4,14 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>0.4.0</Version>
+    <Version>0.4.2</Version>
     <Authors>Boyko Andrey</Authors>
     <Company>UCS</Company>
     <Product>UCS.Extensions.Http</Product>
     <Description>Can create response from controllers, based on always 200OK status code convention.
 Only OK or Error methods supports.</Description>
     <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
-    <AssemblyVersion>0.4.0.0</AssemblyVersion>
+    <AssemblyVersion>0.4.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

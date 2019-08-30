@@ -73,40 +73,42 @@ namespace UCS.Extensions.Http.Sender.v2
         protected abstract HttpContent CreateContent<T>(T body, HttpSenderOptions options);
 
         /// <inheritdoc/>
-        public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData,
-            bool validateResponse = true, CancellationToken cancel = default)
-            => await SendHttpRequest<object, object>(requestType, apiMethod, postedData,
-                (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
+        public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default)
+            => await SendHttpRequest<object, object>(requestType, apiMethod, postedData, cancel);
 
         /// <inheritdoc/>
-        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData,
-            bool validateResponse = true, CancellationToken cancel = default) where T : new()
-            => await SendHttpRequest<object, T>(requestType, apiMethod, postedData,
-                (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
+        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default) where T : new()
+            => await SendHttpRequest<object, T>(requestType, apiMethod, postedData, cancel);
 
         /// <inheritdoc/>
-        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
-            bool validateResponse = true, CancellationToken cancel = default) where T : new()
-            => await SendHttpRequest<string, T>(requestType, apiMethod, string.Empty,
-                (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
+        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, CancellationToken cancel = default) where T : new()
+            => await SendHttpRequest<string, T>(requestType, apiMethod, string.Empty, cancel);
 
         /// <inheritdoc/>
-        public async Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body,
-            Action<HttpSenderOptions, CustomHttpHeaders> cfgAction, CancellationToken cancel = default)
+        public async Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body, CancellationToken cancel = default,
+            Action<HttpSenderOptions, CustomHttpHeaders> cfgAction = default)
             where TResp : new()
         {
-            var options = new HttpSenderOptions();
+            HttpSenderOptions options;
             var headers = new CustomHttpHeaders();
 
-            cfgAction?.Invoke(options, headers);
+            if (cfgAction == default)
+            {
+                options = _options;
+            }
+            else
+            {
+                options = new HttpSenderOptions();
+                cfgAction.Invoke(options, headers);
+            }
 
             var content = DoCreateContent(body, options);
-            return await SendHttpRequest<TResp>(requestType, apiMethod, content, headers, options, cancel);
+            return await SendHttpRequest<TResp>(requestType, apiMethod, content, cancel, options, headers);
         }
 
         /// <inheritdoc/>
-        public async Task<TResp> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content,
-            CustomHttpHeaders headers = default, HttpSenderOptions options = default, CancellationToken cancel = default)
+        public async Task<TResp> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content, 
+            CancellationToken cancel = default, HttpSenderOptions options = default, CustomHttpHeaders headers = default)
             where TResp : new()
         {
             var uri = new Uri(_client.BaseAddress, apiMethod);
