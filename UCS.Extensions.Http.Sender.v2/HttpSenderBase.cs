@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +25,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="client">System.Net.Http.HttpClient</param>
         /// <param name="options"></param>
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
-        protected HttpSenderBase(HttpClient client, HttpSenderOptions options, ILogger logger )
+        protected HttpSenderBase(HttpClient client, HttpSenderOptions options, ILogger logger)
         {
             _client = client;
             _options = options;
@@ -45,9 +44,8 @@ namespace UCS.Extensions.Http.Sender.v2
         /// validate responce bode, if contains 'error' field return true
         /// </summary>
         /// <param name="body">responce body</param>
-        /// <param name="errText">error description</param>
         /// <returns>true or false</returns>
-        protected abstract bool HasErrorInResponseBody(string body, out string errText);
+        protected abstract void CheckResponseBodyForError<T>(T body);
 
         /// <summary>
         /// deserialize http response body to class
@@ -55,7 +53,8 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="options">deserialize options</param>
         /// </summary>
         /// <returns>T resolver</returns>
-        protected abstract T Deserialize<T>(string str, HttpSenderOptions options);
+        protected abstract T Deserialize<T>(string str, HttpSenderOptions options)
+            where T : new();
 
         /// <summary>
         /// serialize http request class to string
@@ -73,11 +72,6 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <returns>stringr</returns>
         protected abstract HttpContent CreateContent<T>(T body, HttpSenderOptions options);
 
-        private HttpContent DoCreateContent<T>(T body, HttpSenderOptions options)
-        {
-            return body == null ? null : CreateContent(body, options);
-        }
-
         /// <inheritdoc/>
         public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData,
             bool validateResponse = true, CancellationToken cancel = default)
@@ -86,20 +80,20 @@ namespace UCS.Extensions.Http.Sender.v2
 
         /// <inheritdoc/>
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData,
-            bool validateResponse = true, CancellationToken cancel = default) where T : class
+            bool validateResponse = true, CancellationToken cancel = default) where T : new()
             => await SendHttpRequest<object, T>(requestType, apiMethod, postedData,
                 (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         /// <inheritdoc/>
         public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
-            bool validateResponse = true, CancellationToken cancel = default) where T : class
+            bool validateResponse = true, CancellationToken cancel = default) where T : new()
             => await SendHttpRequest<string, T>(requestType, apiMethod, string.Empty,
                 (opt, headers) => { opt.ValidateErrorsInResponse = validateResponse; }, cancel);
 
         /// <inheritdoc/>
         public async Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body,
             Action<HttpSenderOptions, CustomHttpHeaders> cfgAction, CancellationToken cancel = default)
-            where TResp : class
+            where TResp : new()
         {
             var options = new HttpSenderOptions();
             var headers = new CustomHttpHeaders();
@@ -113,7 +107,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <inheritdoc/>
         public async Task<TResp> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content,
             CustomHttpHeaders headers = default, HttpSenderOptions options = default, CancellationToken cancel = default)
-            where TResp : class
+            where TResp : new()
         {
             var uri = new Uri(_client.BaseAddress, apiMethod);
             var senderOptions = options ?? _options ?? new HttpSenderOptions();
@@ -136,11 +130,7 @@ namespace UCS.Extensions.Http.Sender.v2
 
                     _logger.LogDebug("Response: " + bodyAsStr);
 
-
-                    if (senderOptions.ValidateErrorsInResponse && HasErrorInResponseBody(bodyAsStr, out var errMsg))
-                        throw new HttpExc(HttpStatusCode.InternalServerError, errMsg);
-
-                    return Deserialize<TResp>(bodyAsStr, senderOptions);
+                    return DoSerialize<TResp>(bodyAsStr, senderOptions);
                 }
                 catch (TaskCanceledException cex)
                 {
@@ -161,5 +151,18 @@ namespace UCS.Extensions.Http.Sender.v2
             }
         }
 
+        private HttpContent DoCreateContent<T>(T body, HttpSenderOptions options)
+        {
+            return body == null ? null : CreateContent(body, options);
+        }
+
+        private T DoSerialize<T>(string str, HttpSenderOptions options)
+            where T : new()
+        {
+            if (string.IsNullOrEmpty(str)) return new T();
+            if (typeof(T).IsValueType || typeof(T) == typeof(string)) return (T)Convert.ChangeType(str, typeof(T));
+
+            return Deserialize<T>(str, options);
+        }
     }
 }

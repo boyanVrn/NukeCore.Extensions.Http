@@ -33,7 +33,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <typeparam name="T">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
         Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod,
-            bool validateResponse = true, CancellationToken cancel = default) where T : class;
+            bool validateResponse = true, CancellationToken cancel = default) where T : new();
 
         /// <summary>
         /// use in case when request body exists, and response body needed too
@@ -46,7 +46,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <typeparam name="T">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
         Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData,
-            bool validateResponse = true, CancellationToken cancel = default) where T : class;
+            bool validateResponse = true, CancellationToken cancel = default) where T : new();
 
         /// <summary>
         /// base extended http send method. use then need flex custom tuning
@@ -61,7 +61,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <returns>class or exception</returns>
         Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body,
             Action<HttpSenderOptions, CustomHttpHeaders> cfgAction, CancellationToken cancel = default)
-                where TResp : class;
+                where TResp : new();
 
         /// <summary>
         /// base extended http send method. use then need flex custom tuning
@@ -76,6 +76,6 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <returns>class or exception</returns>
         Task<TResp> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content,
             CustomHttpHeaders headers = default, HttpSenderOptions options = default, CancellationToken cancel = default)
-                where TResp : class;
+                where TResp : new();
     }
 }

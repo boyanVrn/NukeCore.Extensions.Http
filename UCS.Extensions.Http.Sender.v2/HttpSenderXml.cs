@@ -5,10 +5,12 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
+using System.Xml.Linq;
+using System.Xml.XPath;
 using UCS.Extensions.Http.Common.Helpers;
 using UCS.Extensions.Http.Common.Models;
 using UCS.Extensions.Http.Errors;
+using UCS.Extensions.Http.Sender.v2.Additional;
 
 namespace UCS.Extensions.Http.Sender.v2
 {
@@ -33,46 +35,34 @@ namespace UCS.Extensions.Http.Sender.v2
         }
 
         /// <inheritdoc/>
-        protected override bool HasErrorInResponseBody(string body, out string errText)
+        protected override void CheckResponseBodyForError<T>(T body)
         {
-            errText = string.Empty;
+            if (!(body is XDocument xBody)) return;
 
-            if (string.IsNullOrEmpty(body))
-            {
-                errText = "empty xml";
-                return false;
-            }
+            var errCode = xBody?.XPathSelectElement("Exception/ErrorCode")?.Value ?? string.Empty;
+            var errMsg = xBody?.XPathSelectElement("Exception/ErrorMessage")?.Value ?? string.Empty;
 
-            try
-            {
-                var xDoc = new XmlDocument();
-                xDoc.Load(body);
-
-                var excNode = xDoc.SelectSingleNode("Exception");
-                if (excNode == null) return false;
-
-                var errCode = excNode["ErrorCode"]?.Value ?? string.Empty;
-                var errMsg = excNode["ErrorMessage"]?.Value ?? string.Empty;
-
-                errText = $"{errCode}:{errMsg}";
-                return !string.IsNullOrEmpty(errCode + errMsg);
-            }
-            catch
-            {
-                errText = "Xml parse error";
-                return false;
-            }
+            if (!string.IsNullOrEmpty(errCode + errMsg))
+                throw new HttpExc(HttpStatusCode.InternalServerError, $"{errCode}:{errMsg}");
         }
 
         /// <inheritdoc/>
         protected override T Deserialize<T>(string str, HttpSenderOptions options)
         {
-            return XmlSerializator.XmlSerializator.Deserialize<T>(str);
+            var doc = XDocument.Parse(str);
+
+            if (options.ValidateErrorsInResponse) CheckResponseBodyForError(doc);
+            if (options.XmlParseSettings.RemoveEmptyElements) doc.RemoveEmptyElements();
+
+            return XmlUtils.CastXDocumentToObj<T>(doc);
         }
 
         /// <inheritdoc/>
         protected override string Serialize<T>(T obj, HttpSenderOptions options)
         {
+            if (obj == null) return string.Empty;
+            if (obj is string) return obj as string;
+
             return XmlSerializator.XmlSerializator.Serialize(obj);
         }
 

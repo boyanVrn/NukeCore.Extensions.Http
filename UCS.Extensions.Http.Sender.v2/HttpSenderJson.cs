@@ -34,36 +34,24 @@ namespace UCS.Extensions.Http.Sender.v2
         }
 
         /// <inheritdoc/>
-        protected override bool HasErrorInResponseBody(string body, out string errText)
+        protected override void CheckResponseBodyForError<T>(T body)
         {
-            errText = string.Empty;
+            if (!(body is JToken jBody)) return;
 
-            if (string.IsNullOrEmpty(body))
-            {
-                errText = "empty json";
-                return false;
-            }
+            if (!jBody.HasValues || jBody.First == null) return;
+            var errMsg = jBody["error"]?.Value<string>();
 
-            try
-            {
-                var jToken = JToken.Parse(body);
-
-                if (!jToken.HasValues || jToken.First == null) return false;
-
-                errText = jToken["error"]?.Value<string>();
-                return !string.IsNullOrEmpty(errText);
-            }
-            catch (JsonReaderException)
-            {
-                errText = "Json parse error";
-                return false;
-            }
+            if (!string.IsNullOrEmpty(errMsg))
+                throw new HttpExc(HttpStatusCode.InternalServerError, $"{errMsg}");
         }
 
         /// <inheritdoc/>
         protected override T Deserialize<T>(string str, HttpSenderOptions options)
         {
-            return JsonConvert.DeserializeObject<T>(str, options.JsonParseSettings.Deserializing);
+            var jBody = JToken.Parse(str);
+            if (options.ValidateErrorsInResponse) CheckResponseBodyForError(jBody);
+
+            return jBody.ToObject<T>(JsonSerializer.Create(options.JsonParseSettings.Deserializing));
         }
 
         /// <inheritdoc/>
