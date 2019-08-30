@@ -4,15 +4,15 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <LangVersion>7.3</LangVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.4.3</Version>
+        <Version>0.4.4</Version>
         <Authors>Boyko Andrey</Authors>
         <Company>UCS</Company>
         <Product>UCS.Extensions.Http</Product>
         <Description>Abstract http sender with transport errors handling</Description>
         <Copyright>Boyko Andrey</Copyright>
         <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
-        <AssemblyVersion>0.4.3.0</AssemblyVersion>
-        <FileVersion>0.4.3.0</FileVersion>
+        <AssemblyVersion>0.4.4.0</AssemblyVersion>
+        <FileVersion>0.4.4.0</FileVersion>
         <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
     </PropertyGroup>
 
@@ -24,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
     </ItemGroup>
 
