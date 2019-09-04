@@ -44,10 +44,10 @@
         <member name="M:UCS.Extensions.Http.Sender.HttpSender.SendHttpRequest``1(System.Net.Http.HttpMethod,System.String,System.Boolean,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:UCS.Extensions.Http.Sender.HttpSender.SendHttpRequest``2(System.Net.Http.HttpMethod,System.String,``0,System.Action{UCS.Extensions.Http.Sender.HttpSenderOptions,UCS.Extensions.Http.Common.Models.CustomHttpHeaders},System.Threading.CancellationToken)">
+        <member name="M:UCS.Extensions.Http.Sender.HttpSender.SendHttpRequest``2(System.Net.Http.HttpMethod,System.String,``0,System.Action{UCS.Extensions.Http.Sender.HttpSenderOptions,UCS.Extensions.Http.Models.Additional.CustomHttpHeaders},System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
-        <member name="M:UCS.Extensions.Http.Sender.HttpSender.SendHttpRequest``1(System.Net.Http.HttpMethod,System.String,System.Net.Http.HttpContent,UCS.Extensions.Http.Common.Models.CustomHttpHeaders,UCS.Extensions.Http.Sender.HttpSenderOptions,System.Threading.CancellationToken)">
+        <member name="M:UCS.Extensions.Http.Sender.HttpSender.SendHttpRequest``1(System.Net.Http.HttpMethod,System.String,System.Net.Http.HttpContent,UCS.Extensions.Http.Models.Additional.CustomHttpHeaders,UCS.Extensions.Http.Sender.HttpSenderOptions,System.Threading.CancellationToken)">
             <inheritdoc />
         </member>
         <member name="T:UCS.Extensions.Http.Sender.IHttpSender">
@@ -89,7 +89,7 @@
             <typeparam name="T">responce deserialize type</typeparam>
             <returns>class or exception</returns>
         </member>
-        <member name="M:UCS.Extensions.Http.Sender.IHttpSender.SendHttpRequest``2(System.Net.Http.HttpMethod,System.String,``0,System.Action{UCS.Extensions.Http.Sender.HttpSenderOptions,UCS.Extensions.Http.Common.Models.CustomHttpHeaders},System.Threading.CancellationToken)">
+        <member name="M:UCS.Extensions.Http.Sender.IHttpSender.SendHttpRequest``2(System.Net.Http.HttpMethod,System.String,``0,System.Action{UCS.Extensions.Http.Sender.HttpSenderOptions,UCS.Extensions.Http.Models.Additional.CustomHttpHeaders},System.Threading.CancellationToken)">
             <summary>
             base extended http send method. use then need flex custom tuning
             </summary>
@@ -102,7 +102,7 @@
             <typeparam name="TResp">responce deserialize type</typeparam>
             <returns>class or exception</returns>
         </member>
-        <member name="M:UCS.Extensions.Http.Sender.IHttpSender.SendHttpRequest``1(System.Net.Http.HttpMethod,System.String,System.Net.Http.HttpContent,UCS.Extensions.Http.Common.Models.CustomHttpHeaders,UCS.Extensions.Http.Sender.HttpSenderOptions,System.Threading.CancellationToken)">
+        <member name="M:UCS.Extensions.Http.Sender.IHttpSender.SendHttpRequest``1(System.Net.Http.HttpMethod,System.String,System.Net.Http.HttpContent,UCS.Extensions.Http.Models.Additional.CustomHttpHeaders,UCS.Extensions.Http.Sender.HttpSenderOptions,System.Threading.CancellationToken)">
             <summary>
             base extended http send method. use then need flex custom tuning
             </summary>
