@@ -1,8 +1,4 @@
-﻿#if NETSTANDARD
-using Microsoft.Extensions.Logging;
-#endif
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
@@ -25,20 +21,6 @@ namespace UCS.Extensions.Http.Sender
         /// injected http client
         /// </summary>
         public HttpClient Client { get; }
-#if NETSTANDARD
-        private readonly ILogger _logger;
-
-        /// <summary>
-        /// constructor, create new instance of HttpSender
-        /// </summary>
-        /// <param name="client">System.Net.Http.HttpClient</param>
-        /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
-        public HttpSender(HttpClient client, ILogger logger)
-        {
-            _logger = logger;
-            Client = client;
-        }
-#endif
 
         public HttpSender(HttpClient client)
         {
@@ -130,18 +112,11 @@ namespace UCS.Extensions.Http.Sender
 
                 try
                 {
-#if NETSTANDARD
-                    _logger.LogDebug($"Request: [{requestType.ToString().ToUpper()}] {uri.AbsoluteUri}");
-#endif
-
                     var response = await Client.SendAsync(request, cancel);
 
                     await CheckResponseStatusCode(response);
 
                     var bodyAsStr = await HttpSenderHelper.ExtractBodyAsync(response.Content);
-#if NETSTANDARD
-                    _logger.LogDebug("Response: " + bodyAsStr);
-#endif
 
                     if (senderOptions.ValidateErrorsInResponse && HasErrorInResponseBody(bodyAsStr, out var errMsg))
                         throw new HttpExc(HttpStatusCode.InternalServerError, errMsg);
