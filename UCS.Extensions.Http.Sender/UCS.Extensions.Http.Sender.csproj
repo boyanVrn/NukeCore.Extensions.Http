@@ -4,22 +4,21 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <LangVersion>7.3</LangVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.4.3</Version>
+        <Version>0.4.5</Version>
         <Authors>Boyko Andrey</Authors>
         <Company>UCS</Company>
         <Product>UCS.Extensions.Http</Product>
         <Description>Abstract http sender with transport errors handling</Description>
         <Copyright>Boyko Andrey</Copyright>
         <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
-        <AssemblyVersion>0.4.3.0</AssemblyVersion>
-        <FileVersion>0.4.3.0</FileVersion>
+        <AssemblyVersion>0.4.5.0</AssemblyVersion>
+        <FileVersion>0.4.5.0</FileVersion>
         <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net40'">
         <PackageReference Include="Microsoft.Bcl" Version="1.1.10" />
         <PackageReference Include="Microsoft.Bcl.Async" Version="1.0.168" />
-        <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.21" />
         <PackageReference Include="Microsoft.Net.Http" Version="2.2.29" />
     </ItemGroup>
 
@@ -33,6 +32,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.14" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
         <PackageReference Include="UCS.CryptoHelper" Version="1.0.9" />
     </ItemGroup>

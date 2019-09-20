@@ -14,13 +14,6 @@
             injected http client
             </summary>
         </member>
-        <member name="M:UCS.Extensions.Http.Sender.HttpSender.#ctor(System.Net.Http.HttpClient,Microsoft.Extensions.Logging.ILogger)">
-            <summary>
-            constructor, create new instance of HttpSender
-            </summary>
-            <param name="client">System.Net.Http.HttpClient</param>
-            <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
-        </member>
         <member name="M:UCS.Extensions.Http.Sender.HttpSender.#ctor(System.Net.Http.HttpClient)">
             <summary>
             constructor, create new instance of HttpSender, without logger
