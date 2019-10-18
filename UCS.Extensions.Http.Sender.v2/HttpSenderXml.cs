@@ -39,8 +39,8 @@ namespace UCS.Extensions.Http.Sender.v2
         {
             if (!(body is XDocument xBody)) return;
 
-            var errCode = xBody?.XPathSelectElement("Exception/ErrorCode")?.Value ?? string.Empty;
-            var errMsg = xBody?.XPathSelectElement("Exception/ErrorMessage")?.Value ?? string.Empty;
+            var errCode = xBody.XPathSelectElement("Exception/ErrorCode")?.Value ?? string.Empty;
+            var errMsg = xBody.XPathSelectElement("Exception/ErrorMessage")?.Value ?? string.Empty;
 
             if (!string.IsNullOrEmpty(errCode + errMsg))
                 throw new HttpExc(HttpStatusCode.InternalServerError, $"{errCode}:{errMsg}");
@@ -61,7 +61,14 @@ namespace UCS.Extensions.Http.Sender.v2
         protected override string Serialize<T>(T obj, HttpSenderOptions options)
         {
             if (obj == null) return string.Empty;
-            if (obj is string) return obj as string;
+            if (obj is string s) return s;
+
+            if (options.XmlParseSettings.RemoveEmptyElements)
+            {
+                var doc = XmlUtils.CastObjToXDocument(obj);
+                doc.RemoveEmptyElements();
+                return doc.ToString();
+            }
 
             return XmlSerializator.XmlSerializator.Serialize(obj);
         }

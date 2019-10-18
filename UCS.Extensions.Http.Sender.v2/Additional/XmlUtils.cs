@@ -10,6 +10,8 @@ namespace UCS.Extensions.Http.Sender.v2.Additional
         {
             var doc = new XDocument();
 
+            if (obj == null) return doc;
+
             var xmlSerializer = new XmlSerializer(typeof(T));
             using (var writer = doc.CreateWriter())
             {
