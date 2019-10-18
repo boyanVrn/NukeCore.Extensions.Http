@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using UCS.Extensions.Http.Common.Helpers;
 using UCS.Extensions.Http.Common.Models;
 using UCS.Extensions.Http.Errors;
+using UCS.Extensions.Http.Errors.v2;
+using UCS.Extensions.Http.Models.v2;
 
 namespace UCS.Extensions.Http.Sender.v2
 {
@@ -27,31 +29,37 @@ namespace UCS.Extensions.Http.Sender.v2
         public HttpSenderJson(HttpClient client, HttpSenderOptions options, ILogger logger) : base(client, options, logger) { }
 
         /// <inheritdoc/>
-        protected override async Task CheckResponseStatusCode(HttpResponseMessage src)
+        protected override bool CheckResponseStatusCode(HttpResponseMessage src)
         {
-            if (src.StatusCode != HttpStatusCode.OK)
-                throw new HttpExc(src.StatusCode, src.ReasonPhrase + Environment.NewLine + await HttpSenderHelper.ExtractBodyAsync(src.Content));
+            return src.StatusCode != HttpStatusCode.OK;
         }
 
         /// <inheritdoc/>
-        protected override void CheckResponseBodyForError<T>(T body)
+        protected override bool TryExtractErrorFromBody<T>(T body, out string msg)
         {
-            if (!(body is JToken jBody)) return;
+            msg = string.Empty;
 
-            if (!jBody.HasValues || jBody.First == null) return;
+            if (!(body is JToken jBody)) return false;
+
+            if (!jBody.HasValues || jBody.First == null) return false;
             var errMsg = jBody["error"]?.Value<string>();
 
-            if (!string.IsNullOrEmpty(errMsg))
-                throw new HttpExc(HttpStatusCode.InternalServerError, $"{errMsg}");
+            if (string.IsNullOrEmpty(errMsg)) return false;
+
+            msg = errMsg;
+            return true;
         }
 
         /// <inheritdoc/>
-        protected override T Deserialize<T>(string str, HttpSenderOptions options)
+        protected override IResponse<T> Deserialize<T>(string str, HttpSenderOptions options)
         {
             var jBody = JToken.Parse(str);
-            if (options.ValidateErrorsInResponse) CheckResponseBodyForError(jBody);
 
-            return jBody.ToObject<T>(JsonSerializer.Create(options.JsonParseSettings.Deserializing));
+            if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(jBody, out var errMsg))
+                return ResponseFactory<T>.CreateInstance(new HttpException(errMsg));
+
+            var result = jBody.ToObject<T>(JsonSerializer.Create(options.JsonParseSettings.Deserializing));
+            return ResponseFactory<T>.CreateInstance(result);
         }
 
         /// <inheritdoc/>

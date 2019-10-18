@@ -10,6 +10,7 @@ using System.Xml.XPath;
 using UCS.Extensions.Http.Common.Helpers;
 using UCS.Extensions.Http.Common.Models;
 using UCS.Extensions.Http.Errors;
+using UCS.Extensions.Http.Models.v2;
 using UCS.Extensions.Http.Sender.v2.Additional;
 
 namespace UCS.Extensions.Http.Sender.v2
@@ -35,7 +36,7 @@ namespace UCS.Extensions.Http.Sender.v2
         }
 
         /// <inheritdoc/>
-        protected override void CheckResponseBodyForError<T>(T body)
+        protected override bool TryExtractErrorFromBody<T>(T body, out string msg)
         {
             if (!(body is XDocument xBody)) return;
 
@@ -47,14 +48,14 @@ namespace UCS.Extensions.Http.Sender.v2
         }
 
         /// <inheritdoc/>
-        protected override T Deserialize<T>(string str, HttpSenderOptions options)
+        protected override IResponse<T> Deserialize<T>(string str, HttpSenderOptions options)
         {
             var doc = XDocument.Parse(str);
 
-            if (options.ValidateErrorsInResponse) CheckResponseBodyForError(doc);
+            if (options.ValidateErrorsInResponse) TryExtractErrorFromBody(doc, out TODO);
             if (options.XmlParseSettings.RemoveEmptyElements) doc.RemoveEmptyElements();
 
-            return XmlUtils.CastXDocumentToObj<T>(doc);
+            return ResponseFactory<T>.CreateInstance(XmlUtils.CastXDocumentToObj<T>(doc));
         }
 
         /// <inheritdoc/>

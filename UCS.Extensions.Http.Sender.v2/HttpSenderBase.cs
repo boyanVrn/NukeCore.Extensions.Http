@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using UCS.Extensions.Http.Common.Helpers;
 using UCS.Extensions.Http.Common.Models;
 using UCS.Extensions.Http.Errors;
+using UCS.Extensions.Http.Errors.v2;
+using UCS.Extensions.Http.Models.v2;
 
 namespace UCS.Extensions.Http.Sender.v2
 {
@@ -13,7 +15,7 @@ namespace UCS.Extensions.Http.Sender.v2
     /// <summary>
     /// http sander abstract base class
     /// </summary>
-    public abstract class HttpSenderBase : IHttpSender
+    public abstract class HttpSenderBase //: IHttpSender
     {
         private readonly HttpClient _client;
         private readonly ILogger _logger;
@@ -35,17 +37,18 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <summary>
         /// validate http code in responce, in base valid only 200
         /// </summary>
-        /// <param name="src"></param>
+        /// <param name="msg"></param>
         /// <returns></returns>
         /// <exception cref="HttpExc"></exception>
-        protected abstract Task CheckResponseStatusCode(HttpResponseMessage src);
+        protected abstract bool CheckResponseStatusCode(HttpResponseMessage msg);
 
         /// <summary>
         /// validate responce bode, if contains 'error' field return true
         /// </summary>
         /// <param name="body">responce body</param>
+        /// <param name="errMsg"></param>
         /// <returns>true or false</returns>
-        protected abstract void CheckResponseBodyForError<T>(T body);
+        protected abstract bool TryExtractErrorFromBody<T>(T body, out string errMsg);
 
         /// <summary>
         /// deserialize http response body to class
@@ -53,7 +56,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="options">deserialize options</param>
         /// </summary>
         /// <returns>T resolver</returns>
-        protected abstract T Deserialize<T>(string str, HttpSenderOptions options)
+        protected abstract IResponse<T> Deserialize<T>(string str, HttpSenderOptions options)
             where T : new();
 
         /// <summary>
@@ -107,7 +110,7 @@ namespace UCS.Extensions.Http.Sender.v2
         }
 
         /// <inheritdoc/>
-        public async Task<TResp> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content, 
+        public async Task<IResponse<TResp>> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content, 
             CancellationToken cancel = default, HttpSenderOptions options = default, CustomHttpHeaders headers = default)
             where TResp : new()
         {
@@ -126,29 +129,26 @@ namespace UCS.Extensions.Http.Sender.v2
 
                     var response = await _client.SendAsync(request, cancel);
 
-                    await CheckResponseStatusCode(response);
-
                     var bodyAsStr = await HttpSenderHelper.ExtractBodyAsync(response.Content);
 
-                    _logger.LogDebug("Response: " + bodyAsStr);
+                    if (!CheckResponseStatusCode(response))
+                        return ResponseFactory<TResp>.CreateInstance(new HttpException(response.ReasonPhrase + Environment.NewLine + bodyAsStr));
 
+                    _logger.LogDebug("Response: " + bodyAsStr);
+                    
                     return DoSerialize<TResp>(bodyAsStr, senderOptions);
                 }
                 catch (TaskCanceledException cex)
                 {
-                    throw new HttpExc($"Client cancel task: {cex.Message}");
+                    return ResponseFactory<TResp>.CreateInstance(new HttpException($"Client cancel task: {cex.Message}"));
                 }
                 catch (TimeoutException tex)
                 {
-                    throw new HttpExc($"Connection timeout: {tex.Message}");
-                }
-                catch (HttpExc)
-                {
-                    throw;
+                    return ResponseFactory<TResp>.CreateInstance(new HttpException($"Connection timeout: {tex.Message}"));
                 }
                 catch (Exception ex)
                 {
-                    throw new HttpExc(ex.Message, ex.InnerException);
+                    return ResponseFactory<TResp>.CreateInstance(new HttpException(ex.Message, ex.InnerException));
                 }
             }
         }
@@ -158,11 +158,11 @@ namespace UCS.Extensions.Http.Sender.v2
             return body == null ? null : CreateContent(body, options);
         }
 
-        private T DoSerialize<T>(string str, HttpSenderOptions options)
+        private IResponse<T> DoSerialize<T>(string str, HttpSenderOptions options)
             where T : new()
         {
-            if (string.IsNullOrEmpty(str)) return new T();
-            if (typeof(T).IsValueType || typeof(T) == typeof(string)) return (T)Convert.ChangeType(str, typeof(T));
+            if (string.IsNullOrEmpty(str)) return ResponseFactory<T>.CreateInstance(new T()) ;
+            if (typeof(T).IsValueType || typeof(T) == typeof(string)) return ResponseFactory<T>.CreateInstance((T)Convert.ChangeType(str, typeof(T)));
 
             return Deserialize<T>(str, options);
         }
