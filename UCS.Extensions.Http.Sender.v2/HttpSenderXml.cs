@@ -1,17 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using UCS.Extensions.Http.Common.Helpers;
+using UCS.Extensions.Http.Common.Additional;
 using UCS.Extensions.Http.Common.Models;
-using UCS.Extensions.Http.Errors;
+using UCS.Extensions.Http.Errors.v2;
 using UCS.Extensions.Http.Models.v2;
-using UCS.Extensions.Http.Sender.v2.Additional;
 
 namespace UCS.Extensions.Http.Sender.v2
 {
@@ -28,23 +24,22 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
         public HttpSenderXml(HttpClient client, HttpSenderOptions options, ILogger logger) : base(client, options, logger) { }
 
-        /// <inheritdoc/>
-        protected override async Task CheckResponseStatusCode(HttpResponseMessage src)
-        {
-            if (src.StatusCode != HttpStatusCode.OK)
-                throw new HttpExc(src.StatusCode, src.ReasonPhrase + Environment.NewLine + await HttpSenderHelper.ExtractBodyAsync(src.Content));
-        }
 
         /// <inheritdoc/>
         protected override bool TryExtractErrorFromBody<T>(T body, out string msg)
         {
-            if (!(body is XDocument xBody)) return;
+            msg = string.Empty;
+
+            if (!(body is XDocument xBody)) return false;
 
             var errCode = xBody.XPathSelectElement("Exception/ErrorCode")?.Value ?? string.Empty;
             var errMsg = xBody.XPathSelectElement("Exception/ErrorMessage")?.Value ?? string.Empty;
 
-            if (!string.IsNullOrEmpty(errCode + errMsg))
-                throw new HttpExc(HttpStatusCode.InternalServerError, $"{errCode}:{errMsg}");
+            if (string.IsNullOrEmpty(errCode + errMsg))
+                return false;
+
+            msg = $"{errCode}:{errMsg}";
+            return true;
         }
 
         /// <inheritdoc/>
@@ -52,10 +47,12 @@ namespace UCS.Extensions.Http.Sender.v2
         {
             var doc = XDocument.Parse(str);
 
-            if (options.ValidateErrorsInResponse) TryExtractErrorFromBody(doc, out TODO);
-            if (options.XmlParseSettings.RemoveEmptyElements) doc.RemoveEmptyElements();
+            if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(doc, out var errMsg))
+                return ResponseBase<T>.CreateFault(new HttpFail(errMsg));
 
-            return ResponseFactory<T>.CreateInstance(XmlUtils.CastXDocumentToObj<T>(doc));
+            if (options.XmlParseSettings.RemoveEmptyElements) XmlUtils.RemoveEmptyElementsFrom(doc);
+
+            return ResponseBase<T>.CreateSuccess(XmlUtils.CastXDocumentToObj<T>(doc));
         }
 
         /// <inheritdoc/>
@@ -67,7 +64,8 @@ namespace UCS.Extensions.Http.Sender.v2
             if (options.XmlParseSettings.RemoveEmptyElements)
             {
                 var doc = XmlUtils.CastObjToXDocument(obj);
-                doc.RemoveEmptyElements();
+                XmlUtils.RemoveEmptyElementsFrom(doc);
+
                 return doc.ToString();
             }
 

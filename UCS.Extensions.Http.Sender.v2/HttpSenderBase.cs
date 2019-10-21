@@ -1,17 +1,18 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using UCS.Extensions.Http.Common.Helpers;
 using UCS.Extensions.Http.Common.Models;
-using UCS.Extensions.Http.Errors;
 using UCS.Extensions.Http.Errors.v2;
 using UCS.Extensions.Http.Models.v2;
 
 namespace UCS.Extensions.Http.Sender.v2
 {
 
+    //TODO fill xml doc 
     /// <summary>
     /// http sander abstract base class
     /// </summary>
@@ -21,12 +22,14 @@ namespace UCS.Extensions.Http.Sender.v2
         private readonly ILogger _logger;
         private readonly HttpSenderOptions _options;
 
+
         /// <summary>
         /// constructor, create new instance of HttpSender
         /// </summary>
         /// <param name="client">System.Net.Http.HttpClient</param>
         /// <param name="options"></param>
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
+        /// 
         protected HttpSenderBase(HttpClient client, HttpSenderOptions options, ILogger logger)
         {
             _client = client;
@@ -39,8 +42,10 @@ namespace UCS.Extensions.Http.Sender.v2
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        /// <exception cref="HttpExc"></exception>
-        protected abstract bool CheckResponseStatusCode(HttpResponseMessage msg);
+        protected virtual bool CheckResponseStatusCode(HttpResponseMessage msg)
+        {
+            return msg.StatusCode != HttpStatusCode.OK;
+        }
 
         /// <summary>
         /// validate responce bode, if contains 'error' field return true
@@ -75,20 +80,55 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <returns>stringr</returns>
         protected abstract HttpContent CreateContent<T>(T body, HttpSenderOptions options);
 
-        /// <inheritdoc/>
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestType"></param>
+        /// <param name="apiMethod"></param>
+        /// <param name="postedData"></param>
+        /// <param name="cancel"></param>
+        /// <returns></returns>
         public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default)
             => await SendHttpRequest<object, object>(requestType, apiMethod, postedData, cancel);
 
-        /// <inheritdoc/>
-        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default) where T : new()
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestType"></param>
+        /// <param name="apiMethod"></param>
+        /// <param name="postedData"></param>
+        /// <param name="cancel"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public async Task<IResponse<T>> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default) where T : new()
             => await SendHttpRequest<object, T>(requestType, apiMethod, postedData, cancel);
 
-        /// <inheritdoc/>
-        public async Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, CancellationToken cancel = default) where T : new()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestType"></param>
+        /// <param name="apiMethod"></param>
+        /// <param name="cancel"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public async Task<IResponse<T>> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, CancellationToken cancel = default) where T : new()
             => await SendHttpRequest<string, T>(requestType, apiMethod, string.Empty, cancel);
 
-        /// <inheritdoc/>
-        public async Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body, CancellationToken cancel = default,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestType"></param>
+        /// <param name="apiMethod"></param>
+        /// <param name="body"></param>
+        /// <param name="cancel"></param>
+        /// <param name="cfgAction"></param>
+        /// <typeparam name="TReq"></typeparam>
+        /// <typeparam name="TResp"></typeparam>
+        /// <returns></returns>
+        public async Task<IResponse<TResp>> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body, CancellationToken cancel = default,
             Action<HttpSenderOptions, CustomHttpHeaders> cfgAction = default)
             where TResp : new()
         {
@@ -109,8 +149,18 @@ namespace UCS.Extensions.Http.Sender.v2
             return await SendHttpRequest<TResp>(requestType, apiMethod, content, cancel, options, headers);
         }
 
-        /// <inheritdoc/>
-        public async Task<IResponse<TResp>> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content, 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="requestType"></param>
+        /// <param name="apiMethod"></param>
+        /// <param name="content"></param>
+        /// <param name="cancel"></param>
+        /// <param name="options"></param>
+        /// <param name="headers"></param>
+        /// <typeparam name="TResp"></typeparam>
+        /// <returns></returns>
+        public async Task<IResponse<TResp>> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content,
             CancellationToken cancel = default, HttpSenderOptions options = default, CustomHttpHeaders headers = default)
             where TResp : new()
         {
@@ -132,23 +182,23 @@ namespace UCS.Extensions.Http.Sender.v2
                     var bodyAsStr = await HttpSenderHelper.ExtractBodyAsync(response.Content);
 
                     if (!CheckResponseStatusCode(response))
-                        return ResponseFactory<TResp>.CreateInstance(new HttpException(response.ReasonPhrase + Environment.NewLine + bodyAsStr));
+                        return ResponseBase<TResp>.CreateFault(new HttpFail(response.ReasonPhrase + Environment.NewLine + bodyAsStr));
 
                     _logger.LogDebug("Response: " + bodyAsStr);
-                    
+
                     return DoSerialize<TResp>(bodyAsStr, senderOptions);
                 }
                 catch (TaskCanceledException cex)
                 {
-                    return ResponseFactory<TResp>.CreateInstance(new HttpException($"Client cancel task: {cex.Message}"));
+                    return ResponseBase<TResp>.CreateFault(new HttpFail($"Client cancel task: {cex.Message}"));
                 }
                 catch (TimeoutException tex)
                 {
-                    return ResponseFactory<TResp>.CreateInstance(new HttpException($"Connection timeout: {tex.Message}"));
+                    return ResponseBase<TResp>.CreateFault(new HttpFail($"Connection timeout: {tex.Message}"));
                 }
                 catch (Exception ex)
                 {
-                    return ResponseFactory<TResp>.CreateInstance(new HttpException(ex.Message, ex.InnerException));
+                    return ResponseBase<TResp>.CreateFault(new HttpFail(ex.Message, ex.InnerException));
                 }
             }
         }
@@ -161,8 +211,8 @@ namespace UCS.Extensions.Http.Sender.v2
         private IResponse<T> DoSerialize<T>(string str, HttpSenderOptions options)
             where T : new()
         {
-            if (string.IsNullOrEmpty(str)) return ResponseFactory<T>.CreateInstance(new T()) ;
-            if (typeof(T).IsValueType || typeof(T) == typeof(string)) return ResponseFactory<T>.CreateInstance((T)Convert.ChangeType(str, typeof(T)));
+            if (string.IsNullOrEmpty(str)) return ResponseBase<T>.CreateSuccess(new T());
+            if (typeof(T).IsValueType || typeof(T) == typeof(string)) return ResponseBase<T>.CreateSuccess((T)Convert.ChangeType(str, typeof(T)));
 
             return Deserialize<T>(str, options);
         }

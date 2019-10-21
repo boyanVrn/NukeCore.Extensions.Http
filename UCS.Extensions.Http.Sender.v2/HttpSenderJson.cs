@@ -1,15 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
-using UCS.Extensions.Http.Common.Helpers;
 using UCS.Extensions.Http.Common.Models;
-using UCS.Extensions.Http.Errors;
 using UCS.Extensions.Http.Errors.v2;
 using UCS.Extensions.Http.Models.v2;
 
@@ -28,11 +23,6 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
         public HttpSenderJson(HttpClient client, HttpSenderOptions options, ILogger logger) : base(client, options, logger) { }
 
-        /// <inheritdoc/>
-        protected override bool CheckResponseStatusCode(HttpResponseMessage src)
-        {
-            return src.StatusCode != HttpStatusCode.OK;
-        }
 
         /// <inheritdoc/>
         protected override bool TryExtractErrorFromBody<T>(T body, out string msg)
@@ -56,10 +46,10 @@ namespace UCS.Extensions.Http.Sender.v2
             var jBody = JToken.Parse(str);
 
             if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(jBody, out var errMsg))
-                return ResponseFactory<T>.CreateInstance(new HttpException(errMsg));
+                return ResponseBase<T>.CreateFault(new HttpFail(errMsg));
 
             var result = jBody.ToObject<T>(JsonSerializer.Create(options.JsonParseSettings.Deserializing));
-            return ResponseFactory<T>.CreateInstance(result);
+            return ResponseBase<T>.CreateSuccess(result);
         }
 
         /// <inheritdoc/>

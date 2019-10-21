@@ -2,9 +2,9 @@
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace UCS.Extensions.Http.Sender.v2.Additional
+namespace UCS.Extensions.Http.Common.Additional
 {
-    internal static class XmlUtils
+    public static class XmlUtils
     {
         public static XDocument CastObjToXDocument<T>(T obj)
         {
@@ -33,7 +33,7 @@ namespace UCS.Extensions.Http.Sender.v2.Additional
             }
         }
 
-        public static void RemoveEmptyElements(this XDocument src)
-            => src.Descendants().Where(e => string.IsNullOrEmpty(e.Value)).Remove();
+        public static void RemoveEmptyElementsFrom(XDocument doc)
+            => doc.Descendants().Where(e => string.IsNullOrEmpty(e.Value)).Remove();
     }
 }

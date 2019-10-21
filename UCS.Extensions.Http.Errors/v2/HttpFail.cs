@@ -7,7 +7,7 @@ namespace UCS.Extensions.Http.Errors.v2
 
     /// <inheritdoc />
     /// <summary>Represents errors that occur during http server and client requst/response.</summary>
-    public class HttpException : IFail
+    public class HttpFail : IFail
     {
         /// <summary>
         /// Contains the value of request/responce message status code 
@@ -32,7 +32,7 @@ namespace UCS.Extensions.Http.Errors.v2
         /// </summary>
         /// <param name="message">Gets a message that describes the current exception.</param>
         /// <param name="innerException">An object that describes the error that caused the current exception.</param>
-        public HttpException(string message, Exception innerException = null) 
+        public HttpFail(string message, Exception innerException = null) 
         {
             IsClientError = true;
             InnerException = innerException;
@@ -44,7 +44,7 @@ namespace UCS.Extensions.Http.Errors.v2
         /// </summary>
         /// <param name="status">Responsed server status code.</param>
         /// <param name="message">Gets a message that describes the current exception.</param>
-        public HttpException(HttpStatusCode status, string message)
+        public HttpFail(HttpStatusCode status, string message)
         {
             Description = message;
             Code = status;
