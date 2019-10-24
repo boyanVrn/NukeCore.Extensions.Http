@@ -1,8 +1,8 @@
-﻿using UCS.Extensions.Http.Models.Base.Resolvers;
-using UCS.Extensions.Http.WebApi.Models;
-using UCS.Extensions.Http.WebApi.Models.WebApiResponse;
+﻿using NukeCore.Extensions.Http.Models.Base.Resolvers;
+using NukeCore.Extensions.Http.WebApi.Models;
+using NukeCore.Extensions.Http.WebApi.Models.WebApiResponse;
 
-namespace UCS.Extensions.Http.WebApi
+namespace NukeCore.Extensions.Http.WebApi
 {
 
     public class WebApiResponseFactory : IWebApiResponseFactory

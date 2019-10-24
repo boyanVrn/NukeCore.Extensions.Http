@@ -1,22 +1,23 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using UCS.Extensions.Http.Common.Helpers;
-using UCS.Extensions.Http.Common.Models;
-using UCS.Extensions.Http.Errors.v2;
-using UCS.Extensions.Http.Models.v2;
+using Microsoft.Extensions.Logging;
+using NukeCore.Extensions.Http.Common.Helpers;
+using NukeCore.Extensions.Http.Common.Models;
+using NukeCore.Extensions.Http.Errors;
+using NukeCore.Extensions.Http.Models;
+using NukeCore.Extensions.Http.Models.Base.Resolvers;
 
-namespace UCS.Extensions.Http.Sender.v2
+namespace NukeCore.Extensions.Http.Sender
 {
 
     //TODO fill xml doc 
     /// <summary>
     /// http sander abstract base class
     /// </summary>
-    public abstract class HttpSenderBase //: IHttpSender
+    public abstract class HttpSenderBase : IHttpSender
     {
         private readonly HttpClient _client;
         private readonly ILogger _logger;
@@ -42,7 +43,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        protected virtual bool CheckResponseStatusCode(HttpResponseMessage msg)
+        protected virtual bool HasNotOkStatusCode(HttpResponseMessage msg)
         {
             return msg.StatusCode != HttpStatusCode.OK;
         }
@@ -51,9 +52,10 @@ namespace UCS.Extensions.Http.Sender.v2
         /// validate responce bode, if contains 'error' field return true
         /// </summary>
         /// <param name="body">responce body</param>
-        /// <param name="errMsg"></param>
+        /// <param name="err"></param>
         /// <returns>true or false</returns>
-        protected abstract bool TryExtractErrorFromBody<T>(T body, out string errMsg);
+        protected abstract bool TryExtractErrorFromBody<T>(T body, out FailBase err);
+        // where TOut : IFail, new();
 
         /// <summary>
         /// deserialize http response body to class
@@ -173,34 +175,48 @@ namespace UCS.Extensions.Http.Sender.v2
                 request.Content = content;
                 request.AppendHeaders(senderHeaders);
 
-                try
+                using (var cts = CreateCancellationTokenSource(senderOptions.RequestTimeout, cancel))
                 {
-                    _logger.LogDebug($"Request: [{requestType.ToString().ToUpper()}] {uri.AbsoluteUri}");
 
-                    var response = await _client.SendAsync(request, cancel);
+                    try
+                    {
+                        _logger.LogDebug($"Request: [{requestType.ToString().ToUpper()}] {uri.AbsoluteUri}");
 
-                    var bodyAsStr = await HttpSenderHelper.ExtractBodyAsync(response.Content);
+                        var response = await _client.SendAsync(request, cts?.Token ?? cancel);
 
-                    if (!CheckResponseStatusCode(response))
-                        return ResponseBase<TResp>.CreateFault(new HttpFail(response.ReasonPhrase + Environment.NewLine + bodyAsStr));
+                        var bodyAsStr = await HttpSenderHelper.ExtractBodyAsync(response.Content);
 
-                    _logger.LogDebug("Response: " + bodyAsStr);
+                        _logger.LogDebug("Response: " + bodyAsStr);
 
-                    return DoSerialize<TResp>(bodyAsStr, senderOptions);
-                }
-                catch (TaskCanceledException cex)
-                {
-                    return ResponseBase<TResp>.CreateFault(new HttpFail($"Client cancel task: {cex.Message}"));
-                }
-                catch (TimeoutException tex)
-                {
-                    return ResponseBase<TResp>.CreateFault(new HttpFail($"Connection timeout: {tex.Message}"));
-                }
-                catch (Exception ex)
-                {
-                    return ResponseBase<TResp>.CreateFault(new HttpFail(ex.Message, ex.InnerException));
+                        return HasNotOkStatusCode(response)
+                            ? ResponseBase<TResp>.CreateFault(new HttpFail(response.StatusCode, response.ReasonPhrase))
+                            : DoDeserialize<TResp>(bodyAsStr, senderOptions);
+                    }
+                    catch (OperationCanceledException oex)
+                    {
+                        var errMsg = cancel.IsCancellationRequested
+                            ? $"Client cancel task: {oex.Message}"
+                            : $"Connection timeout: {oex.Message}";
+
+                        return ResponseBase<TResp>.CreateFault(new HttpFail(errMsg));
+                    }
+                    catch (Exception ex)
+                    {
+                        return ResponseBase<TResp>.CreateFault(new HttpFail(ex.Message, ex.InnerException));
+                    }
                 }
             }
+        }
+
+        //TODO перенести в хелпер
+        private static CancellationTokenSource CreateCancellationTokenSource(TimeSpan timeout, CancellationToken cancel)
+        {
+            if (timeout == Timeout.InfiniteTimeSpan) return null;
+
+            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancel);
+            cts.CancelAfter(timeout);
+
+            return cts;
         }
 
         private HttpContent DoCreateContent<T>(T body, HttpSenderOptions options)
@@ -208,7 +224,7 @@ namespace UCS.Extensions.Http.Sender.v2
             return body == null ? null : CreateContent(body, options);
         }
 
-        private IResponse<T> DoSerialize<T>(string str, HttpSenderOptions options)
+        private IResponse<T> DoDeserialize<T>(string str, HttpSenderOptions options)
             where T : new()
         {
             if (string.IsNullOrEmpty(str)) return ResponseBase<T>.CreateSuccess(new T());

@@ -2,9 +2,10 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using UCS.Extensions.Http.Common.Models;
+using NukeCore.Extensions.Http.Common.Models;
+using NukeCore.Extensions.Http.Models;
 
-namespace UCS.Extensions.Http.Sender.v2
+namespace NukeCore.Extensions.Http.Sender
 {
     /// <summary>
     /// http sender methods interface
@@ -19,7 +20,8 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="postedData">request body</param>
         /// <param name="cancel">cancel query token</param>
         /// <returns>void or exception</returns>
-        Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default);
+        Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData,
+            CancellationToken cancel = default);
 
         /// <summary>
         /// use in case when request body is not exists, but response body is needed
@@ -29,7 +31,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="cancel">cancel query token</param>
         /// <typeparam name="T">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
-        Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, CancellationToken cancel = default) 
+        Task<IResponse<T>> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, CancellationToken cancel = default) 
             where T : new();
 
         /// <summary>
@@ -41,7 +43,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="cancel">cancel query token</param>
         /// <typeparam name="T">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
-        Task<T> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default) 
+        Task<IResponse<T>> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default) 
             where T : new();
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <typeparam name="TReq">request serialization type</typeparam>
         /// <typeparam name="TResp">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
-        Task<TResp> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body, 
+        Task<IResponse<TResp>> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body, 
             CancellationToken cancel = default, Action<HttpSenderOptions, CustomHttpHeaders> cfgAction = default)
                 where TResp : new();
 
@@ -70,7 +72,7 @@ namespace UCS.Extensions.Http.Sender.v2
         /// <param name="content">http request content</param>
         /// <typeparam name="TResp">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
-        Task<TResp> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content,
+        Task<IResponse<TResp>> SendHttpRequest<TResp>(HttpMethod requestType, string apiMethod, HttpContent content,
             CancellationToken cancel = default, HttpSenderOptions options = default, CustomHttpHeaders headers = default)
                 where TResp : new();
     }

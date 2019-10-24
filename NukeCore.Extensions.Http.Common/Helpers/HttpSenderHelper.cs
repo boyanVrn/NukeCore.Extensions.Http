@@ -2,9 +2,9 @@
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using UCS.Extensions.Http.Common.Models;
+using NukeCore.Extensions.Http.Common.Models;
 
-namespace UCS.Extensions.Http.Common.Helpers
+namespace NukeCore.Extensions.Http.Common.Helpers
 {
     public static class HttpSenderHelper
     {

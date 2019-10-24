@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Net.Http;
-using UCS.Extensions.Http.Common.Models;
+using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace UCS.Extensions.Http.DependencyInjection
+namespace NukeCore.Extensions.Http.DependencyInjection
 {
 
     /// <summary>
@@ -34,14 +34,14 @@ namespace UCS.Extensions.Http.DependencyInjection
                 throw new ArgumentNullException();
 
             services.AddSingleton(cfg.SenderOptions);
-
+   
             return services
                 .AddHttpClient<TClient, TImplementation>()
                 .ConfigureHttpClient(
                     (sp, options) =>
                     {
                         options.BaseAddress = cfg.BaseAddress;
-                        options.Timeout = cfg.Timeout;
+                        options.Timeout = Timeout.InfiniteTimeSpan; //override by HttpClientOptionsProvider
                         cfg.AcceptHeaders.ForEach(h => options.DefaultRequestHeaders.Accept.Add(h));
                         cfg.RequestHeaders.CopyTo(options.DefaultRequestHeaders);
                     })

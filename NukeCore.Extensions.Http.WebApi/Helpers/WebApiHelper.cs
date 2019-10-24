@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace UCS.Extensions.Http.WebApi.Helpers
+namespace NukeCore.Extensions.Http.WebApi.Helpers
 {
     public static class WebApiHelper
     {

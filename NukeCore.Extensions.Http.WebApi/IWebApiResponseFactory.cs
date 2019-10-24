@@ -1,6 +1,6 @@
-﻿using UCS.Extensions.Http.WebApi.Models.WebApiResponse;
+﻿using NukeCore.Extensions.Http.WebApi.Models.WebApiResponse;
 
-namespace UCS.Extensions.Http.WebApi
+namespace NukeCore.Extensions.Http.WebApi
 {
     public interface IWebApiResponseFactory
     {

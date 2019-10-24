@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UCS.Extensions.Http.WebApi.Helpers;
+using NukeCore.Extensions.Http.WebApi.Helpers;
 
-namespace UCS.Extensions.Http.WebApi.Models.WebApiResponse
+namespace NukeCore.Extensions.Http.WebApi.Models.WebApiResponse
 {
     public abstract class WebApiResponse : IWebApiResponse
     {

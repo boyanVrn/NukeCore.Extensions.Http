@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace UCS.Extensions.Http.Common.Models
+namespace NukeCore.Extensions.Http.Common.Models
 {
     public class JsonParseSettings
     {

@@ -1,14 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using UCS.Extensions.Http.Common.Models;
-using UCS.Extensions.Http.Errors.v2;
-using UCS.Extensions.Http.Models.v2;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NukeCore.Extensions.Http.Common.Models;
+using NukeCore.Extensions.Http.Models;
+using NukeCore.Extensions.Http.Models.Base.Resolvers;
 
-namespace UCS.Extensions.Http.Sender.v2
+namespace NukeCore.Extensions.Http.Sender
 {
     /// <summary>
     /// http json sender class
@@ -25,18 +25,19 @@ namespace UCS.Extensions.Http.Sender.v2
 
 
         /// <inheritdoc/>
-        protected override bool TryExtractErrorFromBody<T>(T body, out string msg)
+        protected override bool TryExtractErrorFromBody<T>(T body, out FailBase err)
         {
-            msg = string.Empty;
+            err = null;
 
             if (!(body is JToken jBody)) return false;
 
             if (!jBody.HasValues || jBody.First == null) return false;
-            var errMsg = jBody["error"]?.Value<string>();
+            var msg = jBody["error"]?.Value<string>();
+            var code = jBody["code"]?.Value<string>();
 
-            if (string.IsNullOrEmpty(errMsg)) return false;
+            if (string.IsNullOrEmpty(msg)) return false;
 
-            msg = errMsg;
+            err = FailBase.CreateInstance(code, msg);
             return true;
         }
 
@@ -45,8 +46,8 @@ namespace UCS.Extensions.Http.Sender.v2
         {
             var jBody = JToken.Parse(str);
 
-            if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(jBody, out var errMsg))
-                return ResponseBase<T>.CreateFault(new HttpFail(errMsg));
+            if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(jBody, out var err))
+                return ResponseBase<T>.CreateFault(err);
 
             var result = jBody.ToObject<T>(JsonSerializer.Create(options.JsonParseSettings.Deserializing));
             return ResponseBase<T>.CreateSuccess(result);

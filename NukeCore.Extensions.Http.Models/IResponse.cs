@@ -1,11 +1,10 @@
-﻿using System;
-using UCS.Extensions.Http.Models.Base;
+﻿using NukeCore.Extensions.Http.Models.Base.Interfaces;
 
-namespace UCS.Extensions.Http.Models.v2
+namespace NukeCore.Extensions.Http.Models
 {
-    public interface IResponse<TData> : IData<TData>, IError<IFail>
+    public interface IResponse<out TData> : IData<TData>, IError<IFail>
     {
-        bool HasError { get; }
+        bool IsSuccess { get; }
     }
 
     //public interface IResponseFactory

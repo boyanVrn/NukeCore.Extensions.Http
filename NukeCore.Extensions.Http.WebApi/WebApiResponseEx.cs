@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace UCS.Extensions.Http.WebApi
+namespace NukeCore.Extensions.Http.WebApi
 {
 
     /// <summary>

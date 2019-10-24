@@ -2,7 +2,7 @@
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
-namespace UCS.Extensions.Http.Common.Additional
+namespace NukeCore.Extensions.Http.Common.Additional
 {
     public static class XmlUtils
     {
@@ -25,7 +25,7 @@ namespace UCS.Extensions.Http.Common.Additional
         {
             var xmlSerializer = new XmlSerializer(typeof(T));
 
-            if (doc.Root == null) return default(T);
+            if (doc.Root == null) return default;
 
             using (var reader = doc.Root.CreateReader())
             {

@@ -1,6 +1,7 @@
 ﻿using System;
+using NukeCore.Extensions.Http.Models.Base.Interfaces;
 
-namespace UCS.Extensions.Http.Models.Base.Resolvers
+namespace NukeCore.Extensions.Http.Models.Base.Resolvers
 {
     public class ApiError<T> : IError<T>
     {

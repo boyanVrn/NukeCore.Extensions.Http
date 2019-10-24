@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace UCS.Extensions.Http.WebApi.Models.WebApiResponse
+namespace NukeCore.Extensions.Http.WebApi.Models.WebApiResponse
 {
     public interface IWebApiResponse
     {

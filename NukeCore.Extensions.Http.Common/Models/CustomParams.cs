@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UCS.Extensions.Http.Common.Models
+namespace NukeCore.Extensions.Http.Common.Models
 {
     public class CustomParams : Dictionary<string, object>
     {

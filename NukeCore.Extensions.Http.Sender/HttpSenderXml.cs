@@ -1,15 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using UCS.Extensions.Http.Common.Additional;
-using UCS.Extensions.Http.Common.Models;
-using UCS.Extensions.Http.Errors.v2;
-using UCS.Extensions.Http.Models.v2;
+using Microsoft.Extensions.Logging;
+using NukeCore.Extensions.Http.Common.Additional;
+using NukeCore.Extensions.Http.Common.Models;
+using NukeCore.Extensions.Http.Models;
+using NukeCore.Extensions.Http.Models.Base.Resolvers;
 
-namespace UCS.Extensions.Http.Sender.v2
+namespace NukeCore.Extensions.Http.Sender
 {
     /// <summary>
     /// http xml sender class
@@ -25,21 +25,48 @@ namespace UCS.Extensions.Http.Sender.v2
         public HttpSenderXml(HttpClient client, HttpSenderOptions options, ILogger logger) : base(client, options, logger) { }
 
 
-        /// <inheritdoc/>
-        protected override bool TryExtractErrorFromBody<T>(T body, out string msg)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="body"></param>
+        /// <param name="err"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        protected override bool TryExtractErrorFromBody<T>(T body, out FailBase err)
         {
-            msg = string.Empty;
+            err = null;
 
             if (!(body is XDocument xBody)) return false;
 
-            var errCode = xBody.XPathSelectElement("Exception/ErrorCode")?.Value ?? string.Empty;
-            var errMsg = xBody.XPathSelectElement("Exception/ErrorMessage")?.Value ?? string.Empty;
+            bool ExtractFromElement(out string errCode, out string errMsg)
+            {
+                errCode = xBody.XPathSelectElement("Exception/ErrorCode")?.Value ?? string.Empty;
+                errMsg = xBody.XPathSelectElement("Exception/ErrorMessage")?.Value ?? string.Empty;
 
-            if (string.IsNullOrEmpty(errCode + errMsg))
-                return false;
+                return !string.IsNullOrEmpty(errCode + errMsg);
+            }
 
-            msg = $"{errCode}:{errMsg}";
-            return true;
+            bool ExtractFromAttribute(out string errCode, out string errMsg)
+            {
+                var xData = xBody.Element("Data");
+
+                errCode = xData?.Attribute("ErrorCode")?.Value ?? string.Empty;
+                errMsg = xData?.Attribute("ErrorText")?.Value ?? string.Empty;
+
+                return !string.IsNullOrEmpty(errCode + errMsg);
+            }
+
+            if (ExtractFromElement(out var sCode, out var sMsg) || ExtractFromAttribute(out sCode, out sMsg))
+            {
+                //msg = $"{sCode}:{sMsg}";
+
+                err = FailBase.CreateInstance(sCode, sMsg);
+
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <inheritdoc/>
@@ -47,8 +74,8 @@ namespace UCS.Extensions.Http.Sender.v2
         {
             var doc = XDocument.Parse(str);
 
-            if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(doc, out var errMsg))
-                return ResponseBase<T>.CreateFault(new HttpFail(errMsg));
+            if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(doc, out var err))
+                return ResponseBase<T>.CreateFault(err);
 
             if (options.XmlParseSettings.RemoveEmptyElements) XmlUtils.RemoveEmptyElementsFrom(doc);
 
@@ -61,15 +88,12 @@ namespace UCS.Extensions.Http.Sender.v2
             if (obj == null) return string.Empty;
             if (obj is string s) return s;
 
+            var doc = XmlUtils.CastObjToXDocument(obj);
+
             if (options.XmlParseSettings.RemoveEmptyElements)
-            {
-                var doc = XmlUtils.CastObjToXDocument(obj);
                 XmlUtils.RemoveEmptyElementsFrom(doc);
 
-                return doc.ToString();
-            }
-
-            return XmlSerializator.XmlSerializator.Serialize(obj);
+            return doc.ToString();
         }
 
         /// <inheritdoc/>

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using UCS.Extensions.Http.Models.Base;
-using UCS.Extensions.Http.Models.Base.Resolvers;
+using NukeCore.Extensions.Http.Models.Base.Interfaces;
+using NukeCore.Extensions.Http.Models.Base.Resolvers;
 
-namespace UCS.Extensions.Http.WebApi.Models
+namespace NukeCore.Extensions.Http.WebApi.Models
 {
     public class SuccessResponse<TData> : WebApiResponse.WebApiResponse
     {
