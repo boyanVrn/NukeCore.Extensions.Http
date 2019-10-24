@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <LangVersion>7.3</LangVersion>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	  <Version>0.1.0</Version>
+	  <Authors>Boyko Andrey</Authors>
+	  <Product>NukeCore.Extensions.Http</Product>
+	  <Description>Abstract http sender with transport errors handling</Description>
+	  <Copyright>Boyko Andrey</Copyright>
+	  <AssemblyVersion>0.1.0.0</AssemblyVersion>
+	  <FileVersion>0.1.0.0</FileVersion>
+	  <TargetFrameworks>netstandard2.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NukeCore.Extensions.Http.Common\NukeCore.Extensions.Http.Common.csproj" />
+    <ProjectReference Include="..\NukeCore.Extensions.Http.Errors\NukeCore.Extensions.Http.Errors.csproj" />
+    <ProjectReference Include="..\NukeCore.Extensions.Http.Models\NukeCore.Extensions.Http.Models.csproj" />
+  </ItemGroup>
+  
+  <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="dotnet nuget push -k 86679e1e5f10461fadb6db433db87399 &quot;$(SolutionDir)NukeCore.Extensions.Http.Sender\$(OutputPath)$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true" />
+  </Target>
+
+</Project>

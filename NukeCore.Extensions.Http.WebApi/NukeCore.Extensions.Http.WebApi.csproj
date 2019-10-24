@@ -4,15 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>0.4.8</Version>
+    <Version>0.1.0</Version>
     <Authors>Boyko Andrey</Authors>
-    <Company>UCS</Company>
-    <Product>UCS.Extensions.Http</Product>
+    <Product>NukeCore.Extensions.Http</Product>
     <Description>Can create response from controllers, based on always 200OK status code convention.
 Only OK or Error methods supports.</Description>
-    <PackageProjectUrl>https://git.ucs.ru/nuget/libraries/ucs.extensions.http</PackageProjectUrl>
-    <AssemblyVersion>0.4.8.0</AssemblyVersion>
-    <FileVersion>0.4.8.0</FileVersion>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +20,7 @@ Only OK or Error methods supports.</Description>
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UCS.Extensions.Http.Models\UCS.Extensions.Http.Models.csproj" />
+    <ProjectReference Include="..\NukeCore.Extensions.Http.Models\NukeCore.Extensions.Http.Models.csproj" />
   </ItemGroup>
   
   <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">

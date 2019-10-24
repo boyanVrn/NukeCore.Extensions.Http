@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>7.3</LangVersion>
+    <Version>0.1.0</Version>
+    <Authors>Boyko Andrey</Authors>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Product>NukeCore.Extensions.Http</Product>
+    <Description>Configured http client for DI in host services</Description>
+    <Copyright>Boyko Andrey</Copyright>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NukeCore.Extensions.Http.Common\NukeCore.Extensions.Http.Common.csproj" />
+    <ProjectReference Include="..\NukeCore.Extensions.Http.Models\NukeCore.Extensions.Http.Models.csproj" />
+    <ProjectReference Include="..\NukeCore.Extensions.Http.Sender\NukeCore.Extensions.Http.Sender.csproj" />
+  </ItemGroup>
+  
+  <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="dotnet nuget push -k 86679e1e5f10461fadb6db433db87399 &quot;$(TargetDir)..\$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true" />
+  </Target>
+
+</Project>
