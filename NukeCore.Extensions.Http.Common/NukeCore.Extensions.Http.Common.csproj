@@ -3,13 +3,13 @@
   <PropertyGroup>
     <LangVersion>7.3</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Boyko Andrey</Authors>
     <Product>NukeCore.Extensions.Http</Product>
     <Description>Http common helpers, extensions, models etc</Description>
     <Copyright>Boyko Andrey</Copyright>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
+    <FileVersion>0.1.1.0</FileVersion>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
@@ -22,34 +22,12 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Additional\" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
   <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="dotnet nuget push -k 86679e1e5f10461fadb6db433db87399 &quot;$(SolutionDir)NukeCore.Extensions.Http.Common\$(OutputPath)$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true" />
+    <Exec Command="dotnet nuget push -k oy2asue4d2ea2i52fatql7e6nuxqtewubntd675swxj2k4 -s https://api.nuget.org/v3/index.json &quot;$(OutputPath)$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true" />
   </Target>
-  <PropertyGroup>
-    <LangVersion>7.3</LangVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.0</Version>
-    <Authors>Boyko Andrey</Authors>
-    <Product>NukeCore.Extensions.Http</Product>
-    <Description>Http common helpers, extensions, models etc</Description>
-    <Copyright>Boyko Andrey</Copyright>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-  </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.Build" Version="1.0.14" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Additional\" />
-  </ItemGroup>
 
 </Project>

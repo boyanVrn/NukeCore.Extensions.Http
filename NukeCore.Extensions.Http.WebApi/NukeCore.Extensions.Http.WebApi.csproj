@@ -1,16 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Boyko Andrey</Authors>
     <Product>NukeCore.Extensions.Http</Product>
     <Description>Can create response from controllers, based on always 200OK status code convention.
 Only OK or Error methods supports.</Description>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
+    <FileVersion>0.1.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,9 +22,8 @@ Only OK or Error methods supports.</Description>
   <ItemGroup>
     <ProjectReference Include="..\NukeCore.Extensions.Http.Models\NukeCore.Extensions.Http.Models.csproj" />
   </ItemGroup>
-  
-  <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="dotnet nuget push -k 86679e1e5f10461fadb6db433db87399 &quot;$(TargetDir)..\$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true" />
-  </Target>
 
+  <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="dotnet nuget push -k oy2asue4d2ea2i52fatql7e6nuxqtewubntd675swxj2k4 -s https://api.nuget.org/v3/index.json &quot;$(TargetDir)..\$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true" />
+  </Target>
 </Project>
