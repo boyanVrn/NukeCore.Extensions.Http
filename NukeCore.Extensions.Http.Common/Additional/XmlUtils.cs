@@ -35,5 +35,13 @@ namespace NukeCore.Extensions.Http.Common.Additional
 
         public static void RemoveEmptyElementsFrom(XDocument doc)
             => doc.Descendants().Where(e => string.IsNullOrEmpty(e.Value)).Remove();
+
+        public static void RemoveNilElements(this XDocument src)
+        {
+            const string nil = "{http://www.w3.org/2001/XMLSchema-instance}nil";
+
+            src.Descendants().Where(x => (bool?)x.Attribute(nil) == true)
+                .Remove();
+        }
     }
 }

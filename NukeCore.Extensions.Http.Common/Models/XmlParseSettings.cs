@@ -2,6 +2,13 @@
 {
     public class XmlParseSettings
     {
-        public bool RemoveEmptyElements { get; set; }
+        public XmlSerializeSettings Serialize { get; set; }
+        public XmlSerializeSettings Deserialize { get; set; }
+
+        public XmlParseSettings()
+        {
+            Serialize = new XmlSerializeSettings();
+            Deserialize = new XmlSerializeSettings();
+        }
     }
 }

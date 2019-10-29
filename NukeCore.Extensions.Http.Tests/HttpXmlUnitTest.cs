@@ -67,7 +67,16 @@ namespace NukeCore.Extensions.Http.Tests
                 opt.ValidateErrorsInResponse = true;
                 opt.XmlParseSettings = new XmlParseSettings
                 {
-                    RemoveEmptyElements = true
+                    Serialize = new XmlSerializeSettings()
+                    {
+                        RemoveNilElements = true
+                    },
+
+                    Deserialize = new XmlSerializeSettings()
+                    {
+                        RemoveEmptyElements = true,
+                        RemoveNilElements = true
+                    }
                 };
             });
 

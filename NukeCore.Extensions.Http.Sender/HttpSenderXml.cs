@@ -77,7 +77,8 @@ namespace NukeCore.Extensions.Http.Sender
             if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(doc, out var err))
                 return ResponseBase<T>.CreateFault(err);
 
-            if (options.XmlParseSettings.RemoveEmptyElements) XmlUtils.RemoveEmptyElementsFrom(doc);
+            if (options.XmlParseSettings.Deserialize.RemoveEmptyElements) XmlUtils.RemoveEmptyElementsFrom(doc);
+            if (options.XmlParseSettings.Deserialize.RemoveNilElements) doc.RemoveNilElements();
 
             return ResponseBase<T>.CreateSuccess(XmlUtils.CastXDocumentToObj<T>(doc));
         }
@@ -90,8 +91,8 @@ namespace NukeCore.Extensions.Http.Sender
 
             var doc = XmlUtils.CastObjToXDocument(obj);
 
-            if (options.XmlParseSettings.RemoveEmptyElements)
-                XmlUtils.RemoveEmptyElementsFrom(doc);
+            if (options.XmlParseSettings.Serialize.RemoveEmptyElements) XmlUtils.RemoveEmptyElementsFrom(doc);
+            if (options.XmlParseSettings.Serialize.RemoveNilElements) doc.RemoveNilElements();
 
             return doc.ToString();
         }
