@@ -2,10 +2,7 @@
 
 namespace NukeCore.Extensions.Http.Models
 {
-    public interface IResponse<out TData> : IData<TData>, IError<IFail>
-    {
-        bool IsSuccess { get; }
-    }
+    public interface IResponse<out TData> : IData<TData>, IError<IFail>, ISuccess { }
 
     //public interface IResponseFactory
     //{

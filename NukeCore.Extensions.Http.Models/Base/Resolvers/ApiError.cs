@@ -3,11 +3,16 @@ using NukeCore.Extensions.Http.Models.Base.Interfaces;
 
 namespace NukeCore.Extensions.Http.Models.Base.Resolvers
 {
-    public class ApiError<T> : IError<T>
+    public class ApiError<T> : IError<T>, ISuccess
     {
         public T Error { get; set; }
 
-        public ApiError(){}
+        public bool IsSuccess { get; }
+
+        public ApiError()
+        {
+            IsSuccess = false;
+        }
 
         public ApiError(object error)
         {
@@ -15,6 +20,7 @@ namespace NukeCore.Extensions.Http.Models.Base.Resolvers
                 throw new ArgumentNullException();
 
             Error = (T) error;
+            IsSuccess = false;
         }
     }
 }

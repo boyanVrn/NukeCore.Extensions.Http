@@ -8,11 +8,11 @@ namespace NukeCore.Extensions.Http.Models.Base.Resolvers
     {
         public string Code { get; }
         public string Description { get; }
-        public bool IsInternalError { get; protected set; }
+        protected bool IsInternalError { get; set; }
 
-        public FailBase(Enum code, string description = default)
+        protected FailBase(Enum code, string description = default)
         {
-            Code = code.ToString();
+            Code = code.ToStringCamel();
             Description = description ?? string.Empty;
         }
 

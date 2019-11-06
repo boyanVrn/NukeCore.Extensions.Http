@@ -28,6 +28,13 @@ namespace NukeCore.Extensions.Http.Common.Additional
 
         public static string ToStringUtf8(this byte[] bytes) => bytes.Length >= 0 ? Encoding.UTF8.GetString(bytes) : string.Empty;
 
+        public static string ToStringCamel<T>(this T value)
+        {
+            var str = value.ToString();
+            if (string.IsNullOrEmpty(str) || char.IsLower(str, 0)) return str;
+            return char.ToLowerInvariant(str[0]) + str.Substring(1);
+        }
+
         public static async Task<string> ToStringUtf8Async(this Stream stream)
         {
             using (var ms = new MemoryStream())

@@ -56,6 +56,9 @@ namespace NukeCore.Extensions.Http.Sender
         /// <inheritdoc/>
         protected override string Serialize<T>(T obj, HttpSenderOptions options)
         {
+            if (obj == null) return string.Empty;
+            if (obj is string s) return s;
+
             return JsonConvert.SerializeObject(obj, options.JsonParseSettings.Serializing);
         }
 
@@ -70,14 +73,6 @@ namespace NukeCore.Extensions.Http.Sender
                         content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                         return content;
                     }
-
-                case string str:
-                    {
-                        var content = new StringContent(str, Encoding.UTF8);
-                        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                        return content;
-                    }
-
                 default:
                     {
                         var content = new StringContent(Serialize(body, options), Encoding.UTF8);

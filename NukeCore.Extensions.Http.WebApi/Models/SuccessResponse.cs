@@ -16,7 +16,12 @@ namespace NukeCore.Extensions.Http.WebApi.Models
 
         public override string AsString()
         {
-            return JsonConvert.SerializeObject(_body.Data);
+            return AsString(default);
+        }
+
+        public override string AsString(JsonSerializerSettings ss)
+        {
+            return JsonConvert.SerializeObject(_body.Data, ss ?? new JsonSerializerSettings());
         }
 
         public override OkObjectResult AsObject()

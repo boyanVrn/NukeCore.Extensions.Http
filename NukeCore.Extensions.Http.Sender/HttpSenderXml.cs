@@ -89,7 +89,7 @@ namespace NukeCore.Extensions.Http.Sender
             if (obj == null) return string.Empty;
             if (obj is string s) return s;
 
-            var doc = XmlUtils.CastObjToXDocument(obj);
+            var doc = obj is XDocument xDoc? xDoc: XmlUtils.CastObjToXDocument(obj);
 
             if (options.XmlParseSettings.Serialize.RemoveEmptyElements) XmlUtils.RemoveEmptyElementsFrom(doc);
             if (options.XmlParseSettings.Serialize.RemoveNilElements) doc.RemoveNilElements();
@@ -108,14 +108,6 @@ namespace NukeCore.Extensions.Http.Sender
                         content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                         return content;
                     }
-
-                case string str:
-                    {
-                        var content = new StringContent(str, Encoding.UTF8);
-                        content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
-                        return content;
-                    }
-
                 default:
                     {
                         var content = new StringContent(Serialize(body, options), Encoding.UTF8);
