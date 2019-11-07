@@ -12,11 +12,11 @@ namespace NukeCore.Extensions.Http.Models.Base.Resolvers
 
         protected FailBase(Enum code, string description = default)
         {
-            Code = code.ToStringCamel();
+            Code = code.ToString();
             Description = description ?? string.Empty;
         }
 
-        private FailBase(string code, string description)
+        protected FailBase(string code, string description)
         {
             Code = code;
             Description = description ?? string.Empty;
@@ -24,7 +24,6 @@ namespace NukeCore.Extensions.Http.Models.Base.Resolvers
 
         public T GetCodeAs<T>(T def = default) where T : struct, Enum
             => Code.AsEnum(def);
-
 
         public static FailBase CreateInstance<T>(T fail)
             where T : IFail => new FailBase(fail.Code, fail.Description);

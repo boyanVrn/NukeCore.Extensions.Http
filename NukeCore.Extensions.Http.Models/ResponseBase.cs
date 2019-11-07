@@ -36,13 +36,7 @@ namespace NukeCore.Extensions.Http.Models
         protected virtual bool IsNotOkError(IFail error) => true;
 
         public static ResponseBase<TData> CreateSuccess(TData data) => new ResponseBase<TData>(data);
-        public static ResponseBase<TData> CreateFault(IFail error)
-        {
-            return new ResponseBase<TData>(error);
-        }
-
-        //public static ResponseBase<TData> CreateInstance(TData data, IFail error) => new ResponseBase<TData>(data) { Error = error };
- 
+        public static ResponseBase<TData> CreateFault(IFail error) => new ResponseBase<TData>(error);
+        public static ResponseBase<TData> CreateInstance(TData data, IFail error) => new ResponseBase<TData>(data) { Error = error };
     }
-
 }

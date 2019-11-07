@@ -26,7 +26,7 @@ namespace NukeCore.Extensions.Http.WebApi.Models
 
         public override OkObjectResult AsObject()
         {
-            return new OkObjectResult(_body.Error);
+            return new OkObjectResult(_body);
         }
     }
 }
