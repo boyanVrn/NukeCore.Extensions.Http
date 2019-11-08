@@ -1,4 +1,5 @@
 ﻿using NukeCore.Extensions.Http.Models;
+using NukeCore.Extensions.Http.Models.Base.Interfaces;
 using NukeCore.Extensions.Http.Models.Base.Resolvers;
 using NukeCore.Extensions.Http.WebApi.Models;
 using NukeCore.Extensions.Http.WebApi.Models.WebApiResponse;
@@ -20,7 +21,7 @@ namespace NukeCore.Extensions.Http.WebApi
         public IWebApiResponse CreateFrom<T>(IResponse<T> response)
         {
             if (response.IsSuccess) return new SuccessResponse<T>(new ApiOk<T>(response.Data));
-            return new FailResponse<T>(new ApiError<T>(response.Error));
+            return new FailResponse<IFail>(new ApiError<IFail>(response.Error));
         }
     }
 }
