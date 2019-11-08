@@ -8,7 +8,7 @@ namespace NukeCore.Extensions.Http.Models.Base.Resolvers
     {
         public string Code { get; }
         public string Description { get; }
-        protected bool IsInternalError { get; set; }
+        protected bool IsInternalError { get;  set; }
 
         protected FailBase(Enum code, string description = default)
         {
@@ -21,6 +21,8 @@ namespace NukeCore.Extensions.Http.Models.Base.Resolvers
             Code = code;
             Description = description ?? string.Empty;
         }
+
+        public bool HasInternalError() => IsInternalError;
 
         public T GetCodeAs<T>(T def = default) where T : struct, Enum
             => Code.AsEnum(def);
