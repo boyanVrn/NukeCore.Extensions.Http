@@ -34,7 +34,7 @@ namespace NukeCore.Extensions.Http.Common.Additional
         }
 
         public static void RemoveEmptyElementsFrom(XDocument doc)
-            => doc.Descendants().Where(e => string.IsNullOrEmpty(e.Value)).Remove();
+            => doc.Descendants().Where(e => string.IsNullOrEmpty(e.Value) && !e.HasAttributes).Remove();
 
         public static void RemoveNilElements(this XDocument src)
         {

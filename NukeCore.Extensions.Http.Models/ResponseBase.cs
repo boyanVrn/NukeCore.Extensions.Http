@@ -33,10 +33,16 @@ namespace NukeCore.Extensions.Http.Models
             IsSuccess = true;
         }
 
+        public ResponseBase(TData data, IFail error)
+        {
+            Data = data;
+            Error = error;
+        }
+
         protected virtual bool IsNotOkError(IFail error) => true;
 
-        public static ResponseBase<TData> CreateSuccess(TData data) => new ResponseBase<TData>(data);
-        public static ResponseBase<TData> CreateFault(IFail error) => new ResponseBase<TData>(error);
-        public static ResponseBase<TData> CreateInstance(TData data, IFail error) => new ResponseBase<TData>(data) { Error = error };
+        //public static ResponseBase<TData> CreateSuccess(TData data) => new ResponseBase<TData>(data);
+        //public static ResponseBase<TData> CreateFault(IFail error) => new ResponseBase<TData>(error);
+        //public static ResponseBase<TData> CreateInstance(TData data, IFail error) => new ResponseBase<TData>(data) { Error = error };
     }
 }

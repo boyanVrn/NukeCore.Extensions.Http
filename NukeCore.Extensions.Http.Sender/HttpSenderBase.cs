@@ -9,6 +9,7 @@ using NukeCore.Extensions.Http.Common.Models;
 using NukeCore.Extensions.Http.Errors;
 using NukeCore.Extensions.Http.Models;
 using NukeCore.Extensions.Http.Models.Base.Resolvers;
+using NukeCore.Extensions.Http.Models.Factory;
 
 namespace NukeCore.Extensions.Http.Sender
 {
@@ -22,6 +23,10 @@ namespace NukeCore.Extensions.Http.Sender
         private readonly HttpClient _client;
         private readonly ILogger _logger;
         private readonly HttpSenderOptions _options;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected readonly IResponseFactory ResponseFactory;
 
 
         /// <summary>
@@ -30,12 +35,14 @@ namespace NukeCore.Extensions.Http.Sender
         /// <param name="client">System.Net.Http.HttpClient</param>
         /// <param name="options"></param>
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
+        /// <param name="responseFactory"></param>
         /// 
-        protected HttpSenderBase(HttpClient client, HttpSenderOptions options, ILogger logger)
+        protected HttpSenderBase(HttpClient client, HttpSenderOptions options, IResponseFactory responseFactory, ILogger logger)
         {
             _client = client;
             _options = options;
             _logger = logger;
+            ResponseFactory = responseFactory;
         }
 
         /// <summary>
@@ -189,7 +196,7 @@ namespace NukeCore.Extensions.Http.Sender
                         _logger.LogDebug("Response: " + bodyAsStr);
 
                         return HasNotOkStatusCode(response)
-                            ? ResponseBase<TResp>.CreateFault(new HttpFail(response.StatusCode, response.ReasonPhrase))
+                            ? ResponseFactory.CreateFault<TResp>(new HttpFail(response.StatusCode, response.ReasonPhrase))
                             : DoDeserialize<TResp>(bodyAsStr, senderOptions);
                     }
                     catch (OperationCanceledException oex)
@@ -198,11 +205,11 @@ namespace NukeCore.Extensions.Http.Sender
                             ? $"Client cancel task: {oex.Message}"
                             : $"Connection timeout: {oex.Message}";
 
-                        return ResponseBase<TResp>.CreateFault(new HttpFail(errMsg));
+                        return ResponseFactory.CreateFault<TResp>(new HttpFail(errMsg));
                     }
                     catch (Exception ex)
                     {
-                        return ResponseBase<TResp>.CreateFault(new HttpFail(ex.Message, ex.InnerException));
+                        return ResponseFactory.CreateFault<TResp>(new HttpFail(ex.Message, ex.InnerException));
                     }
                 }
             }
@@ -227,8 +234,8 @@ namespace NukeCore.Extensions.Http.Sender
         private IResponse<T> DoDeserialize<T>(string str, HttpSenderOptions options)
             where T : new()
         {
-            if (string.IsNullOrEmpty(str)) return ResponseBase<T>.CreateSuccess(new T());
-            if (typeof(T).IsValueType || typeof(T) == typeof(string)) return ResponseBase<T>.CreateSuccess((T)Convert.ChangeType(str, typeof(T)));
+            if (string.IsNullOrEmpty(str)) return ResponseFactory.CreateSuccess(new T());
+            if (typeof(T).IsValueType || typeof(T) == typeof(string)) return ResponseFactory.CreateSuccess((T)Convert.ChangeType(str, typeof(T)));
 
             return Deserialize<T>(str, options);
         }

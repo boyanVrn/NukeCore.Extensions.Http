@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using NukeCore.Extensions.Http.Common.Models;
 using NukeCore.Extensions.Http.Models;
 using NukeCore.Extensions.Http.Models.Base.Resolvers;
+using NukeCore.Extensions.Http.Models.Factory;
 
 namespace NukeCore.Extensions.Http.Sender
 {
@@ -20,8 +21,9 @@ namespace NukeCore.Extensions.Http.Sender
         /// </summary>
         /// <param name="client">System.Net.Http.HttpClient</param>
         /// <param name="options">http sender ext params</param>
+        /// <param name="responseFactory"></param>
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
-        public HttpSenderJson(HttpClient client, HttpSenderOptions options, ILogger logger) : base(client, options, logger) { }
+        public HttpSenderJson(HttpClient client, HttpSenderOptions options, IResponseFactory responseFactory, ILogger logger) : base(client, options, responseFactory, logger) { }
 
 
         /// <inheritdoc/>
@@ -47,10 +49,10 @@ namespace NukeCore.Extensions.Http.Sender
             var jBody = JToken.Parse(str);
 
             if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(jBody, out var err))
-                return ResponseBase<T>.CreateFault(err);
+                return ResponseFactory.CreateFault<T>(err);
 
             var result = jBody.ToObject<T>(JsonSerializer.Create(options.JsonParseSettings.Deserializing));
-            return ResponseBase<T>.CreateSuccess(result);
+            return ResponseFactory.CreateSuccess(result);
         }
 
         /// <inheritdoc/>

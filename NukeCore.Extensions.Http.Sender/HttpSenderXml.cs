@@ -8,6 +8,7 @@ using NukeCore.Extensions.Http.Common.Additional;
 using NukeCore.Extensions.Http.Common.Models;
 using NukeCore.Extensions.Http.Models;
 using NukeCore.Extensions.Http.Models.Base.Resolvers;
+using NukeCore.Extensions.Http.Models.Factory;
 
 namespace NukeCore.Extensions.Http.Sender
 {
@@ -21,8 +22,9 @@ namespace NukeCore.Extensions.Http.Sender
         /// </summary>
         /// <param name="client">System.Net.Http.HttpClient</param>
         /// <param name="options">http sender ext params</param>
+        /// <param name="responseFactory"></param>
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
-        public HttpSenderXml(HttpClient client, HttpSenderOptions options, ILogger logger) : base(client, options, logger) { }
+        public HttpSenderXml(HttpClient client, HttpSenderOptions options, IResponseFactory responseFactory, ILogger logger) : base(client, options, responseFactory, logger) { }
 
 
         /// <summary>
@@ -58,11 +60,7 @@ namespace NukeCore.Extensions.Http.Sender
 
             if (ExtractFromElement(out var sCode, out var sMsg) || ExtractFromAttribute(out sCode, out sMsg))
             {
-                //msg = $"{sCode}:{sMsg}";
-
                 err = FailBase.CreateInstance(sCode, sMsg);
-
-
                 return true;
             }
 
@@ -75,12 +73,12 @@ namespace NukeCore.Extensions.Http.Sender
             var doc = XDocument.Parse(str);
 
             if (options.ValidateErrorsInResponse && TryExtractErrorFromBody(doc, out var err))
-                return ResponseBase<T>.CreateFault(err);
+                return ResponseFactory.CreateFault<T>(err);
 
             if (options.XmlParseSettings.Deserialize.RemoveEmptyElements) XmlUtils.RemoveEmptyElementsFrom(doc);
             if (options.XmlParseSettings.Deserialize.RemoveNilElements) doc.RemoveNilElements();
 
-            return ResponseBase<T>.CreateSuccess(XmlUtils.CastXDocumentToObj<T>(doc));
+            return ResponseFactory.CreateSuccess(XmlUtils.CastXDocumentToObj<T>(doc));
         }
 
         /// <inheritdoc/>

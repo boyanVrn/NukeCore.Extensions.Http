@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NukeCore.Extensions.Http.Common.Models;
 using NukeCore.Extensions.Http.DependencyInjection;
+using NukeCore.Extensions.Http.Models.Factory;
 using NukeCore.Extensions.Http.Sender;
 using NukeCore.Extensions.Http.Tests.Models;
 using Xunit;
@@ -15,10 +16,11 @@ namespace NukeCore.Extensions.Http.Tests
 {
     public class HttpXmlUnitTest
     {
-        private const string BaseAddress = "http://172.18.21.28:9192";
+        private const string BaseAddress = "http://172.18.2.28:9192";
 
         private readonly HttpClient _httpClient;
         private readonly ILogger<HttpSenderXml> _nullRepoLogger;
+        private readonly ResponseFactory _responseFactory;
 
         private readonly HttpSenderXml _xmlSender;
         private readonly HttpClientOptionsProvider _optionsProvider;
@@ -31,8 +33,9 @@ namespace NukeCore.Extensions.Http.Tests
             _optionsProvider = CreateHttpSenderOptions();
             _httpClient = CreateHttpClient(_optionsProvider.BaseAddress);
             _nullRepoLogger = new NullLoggerFactory().CreateLogger<HttpSenderXml>();
+            _responseFactory = new ResponseFactory();
 
-            _xmlSender = new HttpSenderXml(_httpClient, _optionsProvider.SenderOptions, _nullRepoLogger);
+            _xmlSender = new HttpSenderXml(_httpClient, _optionsProvider.SenderOptions, _responseFactory, _nullRepoLogger);
 
         }
 
@@ -91,7 +94,7 @@ namespace NukeCore.Extensions.Http.Tests
             {
                 var query = $@"
 <?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?>
-	<Message Action=""Get system time"" Terminal_Type=""9919"" Global_Type=""ABC"" Unit_ID=""1"" User_ID=""1"">
+	<Message Action=""Get system time"" Terminal_Type=""999"" Global_Type=""ABC"" Unit_ID=""1"" User_ID=""1"">
 </Message>";
 
                 var result = await _xmlSender.SendHttpRequest<SystemTime>(HttpMethod.Post, null, query, CancellationToken.None);

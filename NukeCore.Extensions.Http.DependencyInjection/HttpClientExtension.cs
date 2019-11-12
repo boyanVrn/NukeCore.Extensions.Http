@@ -2,6 +2,8 @@
 using System.Net.Http;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using NukeCore.Extensions.Http.Models.Factory;
 
 namespace NukeCore.Extensions.Http.DependencyInjection
 {
@@ -34,6 +36,7 @@ namespace NukeCore.Extensions.Http.DependencyInjection
                 throw new ArgumentNullException();
 
             services.AddSingleton(cfg.SenderOptions);
+            services.TryAddSingleton<IResponseFactory, ResponseFactory>();
    
             return services
                 .AddHttpClient<TClient, TImplementation>()
