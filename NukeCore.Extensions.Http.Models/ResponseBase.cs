@@ -5,7 +5,6 @@ namespace NukeCore.Extensions.Http.Models
 
     public class ResponseBase<TData> : IResponse<TData>
     {
-
         private IFail _error;
 
         public IFail Error
@@ -13,8 +12,7 @@ namespace NukeCore.Extensions.Http.Models
             get => _error;
             private set
             {
-                if (value == null) return;
-                IsSuccess = !IsNotOkError(value);
+                IsSuccess = IsOkError(value);
                 _error = value;
             }
         }
@@ -25,24 +23,20 @@ namespace NukeCore.Extensions.Http.Models
 
         public ResponseBase(IFail error)
         {
-            Error = error;
+            IsSuccess = false;
+            _error = error;
         }
         public ResponseBase(TData data)
         {
             Data = data;
             IsSuccess = true;
         }
-
         public ResponseBase(TData data, IFail error)
         {
             Data = data;
             Error = error;
         }
 
-        protected virtual bool IsNotOkError(IFail error) => true;
-
-        //public static ResponseBase<TData> CreateSuccess(TData data) => new ResponseBase<TData>(data);
-        //public static ResponseBase<TData> CreateFault(IFail error) => new ResponseBase<TData>(error);
-        //public static ResponseBase<TData> CreateInstance(TData data, IFail error) => new ResponseBase<TData>(data) { Error = error };
+        protected virtual bool IsOkError(IFail error) => error == null;
     }
 }
