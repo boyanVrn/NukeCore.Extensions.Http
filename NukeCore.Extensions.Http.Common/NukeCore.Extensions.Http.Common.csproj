@@ -3,13 +3,13 @@
   <PropertyGroup>
     <LangVersion>7.3</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.5</Version>
+    <Version>0.1.7</Version>
     <Authors>Boyko Andrey</Authors>
     <Product>NukeCore.Extensions.Http</Product>
     <Description>Http common helpers, extensions, models etc</Description>
     <Copyright>Boyko Andrey</Copyright>
-    <AssemblyVersion>0.1.5.0</AssemblyVersion>
-    <FileVersion>0.1.5.0</FileVersion>
+    <AssemblyVersion>0.1.7.0</AssemblyVersion>
+    <FileVersion>0.1.7.0</FileVersion>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
