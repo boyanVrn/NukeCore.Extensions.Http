@@ -59,10 +59,8 @@ namespace NukeCore.Extensions.Http.Tests
 
         private static HttpClientOptionsProvider CreateHttpSenderOptions()
         {
-            var provider = new HttpClientOptionsProvider
-            {
-                BaseAddress = new Uri(BaseAddress)
-            };
+            var provider = new HttpClientOptionsProvider();
+            provider.SetBaseAddress(BaseAddress);
 
             provider.ConfigureSenderOptions(opt =>
             {

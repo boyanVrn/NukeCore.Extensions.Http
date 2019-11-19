@@ -33,7 +33,7 @@ namespace NukeCore.Extensions.Http.DependencyInjection
             cfgAction.Invoke(cfg);
 
             if (cfg.BaseAddress == null)
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(cfg.BaseAddress));
 
             services.AddSingleton(cfg.SenderOptions);
             services.TryAddSingleton<IResponseFactory, ResponseFactory>();

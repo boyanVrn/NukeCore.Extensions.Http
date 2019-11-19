@@ -10,21 +10,22 @@ namespace NukeCore.Extensions.Http.DependencyInjection
 
     public class HttpClientOptionsProvider
     {
-        private Uri _baseAddress;
 
+        #region Props
+        private Uri _baseAddress;
         public Uri BaseAddress
         {
             get => _baseAddress;
-            set => _baseAddress = HttpClientHelper.AppendSlash(value);
+            private set => _baseAddress = HttpClientHelper.AppendSlash(value);
         }
-
         public NetworkCredential Credentials { get; private set; }
-        //public TimeSpan Timeout { get; set; }
-
         public bool HasProxy { get; private set; }
         public bool HasServerCertificateValidation { get; private set; }
         public DecompressionMethods ResponseAutoDecompressionType { get; private set; }
         public HttpSenderOptions SenderOptions { get; private set; }
+        public List<MediaTypeWithQualityHeaderValue> AcceptHeaders { get; }
+        public CustomHttpHeaders RequestHeaders { get; }
+        #endregion
 
         public HttpClientOptionsProvider()
         {
@@ -37,9 +38,7 @@ namespace NukeCore.Extensions.Http.DependencyInjection
             SenderOptions = new HttpSenderOptions();
         }
 
-        public List<MediaTypeWithQualityHeaderValue> AcceptHeaders { get; }
-        public CustomHttpHeaders RequestHeaders { get; }
-
+        #region Setters methods
         public void AddCredentials(string login, string password)
         {
             Credentials = new NetworkCredential(login, password);
@@ -86,5 +85,15 @@ namespace NukeCore.Extensions.Http.DependencyInjection
             SenderOptions = so;
         }
 
+        public void SetBaseAddress(string uri)
+        {
+            if (string.IsNullOrEmpty(uri))
+                throw new ArgumentNullException(nameof(uri), "Cannot set base address");
+
+            BaseAddress = new Uri(uri);
+        }
+
+        public void SetBaseAddress(Uri uri) => BaseAddress = uri;
+        #endregion
     }
 }
