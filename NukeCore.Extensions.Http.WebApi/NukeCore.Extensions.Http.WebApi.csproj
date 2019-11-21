@@ -4,13 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>0.1.7</Version>
+    <Version>0.2.0</Version>
     <Authors>Boyko Andrey</Authors>
     <Product>NukeCore.Extensions.Http</Product>
-    <Description>Can create response from controllers, based on always 200OK status code convention.
-Only OK or Error methods supports.</Description>
-    <AssemblyVersion>0.1.7.0</AssemblyVersion>
-    <FileVersion>0.1.7.0</FileVersion>
+    <Description>Can create response from controllers, based on always 200OK status code convention. Only OK or Error methods supports.</Description>
   </PropertyGroup>
 
   <ItemGroup>

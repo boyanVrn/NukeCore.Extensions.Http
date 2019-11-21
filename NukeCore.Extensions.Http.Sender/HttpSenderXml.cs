@@ -24,7 +24,8 @@ namespace NukeCore.Extensions.Http.Sender
         /// <param name="options">http sender ext params</param>
         /// <param name="responseFactory"></param>
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
-        public HttpSenderXml(HttpClient client, HttpSenderOptions options, IResponseFactory responseFactory, ILogger logger) : base(client, options, responseFactory, logger) { }
+        protected HttpSenderXml(HttpClient client, HttpSenderOptions options, IResponseFactory responseFactory, ILogger<HttpSenderXml> logger) 
+            : base(client, options, responseFactory, logger) { }
 
 
         /// <summary>

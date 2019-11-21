@@ -1,15 +1,15 @@
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using NukeCore.Extensions.Http.Common.Models;
+using NukeCore.Extensions.Http.Models.Factory;
+using NukeCore.Extensions.Http.Models.Options;
+using NukeCore.Extensions.Http.Sender;
+using NukeCore.Extensions.Http.Tests.Models;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using NukeCore.Extensions.Http.Common.Models;
-using NukeCore.Extensions.Http.DependencyInjection;
-using NukeCore.Extensions.Http.Models.Factory;
-using NukeCore.Extensions.Http.Sender;
-using NukeCore.Extensions.Http.Tests.Models;
 using Xunit;
 
 namespace NukeCore.Extensions.Http.Tests
@@ -22,8 +22,15 @@ namespace NukeCore.Extensions.Http.Tests
         private readonly ILogger<HttpSenderXml> _nullRepoLogger;
         private readonly ResponseFactory _responseFactory;
 
-        private readonly HttpSenderXml _xmlSender;
+        private readonly ConcreteHttpSenderXml _xmlSender;
         private readonly HttpClientOptionsProvider _optionsProvider;
+        private readonly IHttpSenderOptionsPool _optionsPool;
+
+        public class ConcreteHttpSenderXml : HttpSenderXml
+        {
+            public ConcreteHttpSenderXml(HttpClient client, IHttpSenderOptionsPool optionsPool, IResponseFactory responseFactory, ILogger<HttpSenderXml> logger)
+                : base(client, optionsPool.Take<ConcreteHttpSenderXml>(), responseFactory, logger) { }
+        }
 
         public HttpXmlUnitTest()
         {
@@ -34,8 +41,9 @@ namespace NukeCore.Extensions.Http.Tests
             _httpClient = CreateHttpClient(_optionsProvider.BaseAddress);
             _nullRepoLogger = new NullLoggerFactory().CreateLogger<HttpSenderXml>();
             _responseFactory = new ResponseFactory();
+            _optionsPool = HttpSenderOptionsPool.CreateInstance<ConcreteHttpSenderXml>(_optionsProvider.SenderOptions);
 
-            _xmlSender = new HttpSenderXml(_httpClient, _optionsProvider.SenderOptions, _responseFactory, _nullRepoLogger);
+            _xmlSender = new ConcreteHttpSenderXml(_httpClient, _optionsPool, _responseFactory, _nullRepoLogger);
 
         }
 

@@ -4,14 +4,12 @@
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <LangVersion>7.3</LangVersion>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>0.1.7</Version>
+	  <Version>0.2.0</Version>
 	  <Authors>Boyko Andrey</Authors>
 	  <Product>NukeCore.Extensions.Http</Product>
 	  <Description>Abstract http sender with transport errors handling</Description>
 	  <Copyright>Boyko Andrey</Copyright>
-	  <AssemblyVersion>0.1.7.0</AssemblyVersion>
-	  <FileVersion>0.1.7.0</FileVersion>
-	  <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
 	  <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

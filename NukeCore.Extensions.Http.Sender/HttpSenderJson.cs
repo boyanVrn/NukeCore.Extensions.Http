@@ -23,7 +23,8 @@ namespace NukeCore.Extensions.Http.Sender
         /// <param name="options">http sender ext params</param>
         /// <param name="responseFactory"></param>
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
-        public HttpSenderJson(HttpClient client, HttpSenderOptions options, IResponseFactory responseFactory, ILogger logger) : base(client, options, responseFactory, logger) { }
+        protected HttpSenderJson(HttpClient client, HttpSenderOptions options, IResponseFactory responseFactory, ILogger<HttpSenderJson> logger) 
+            : base(client, options, responseFactory, logger) { }
 
 
         /// <inheritdoc/>

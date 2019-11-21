@@ -188,7 +188,7 @@ namespace NukeCore.Extensions.Http.Sender
                     try
                     {
                         _logger.LogDebug($"Request: [{requestType.ToString().ToUpper()}] {uri.AbsoluteUri}");
-
+                        _logger.LogDebug(await content.ReadAsStringAsync());
                         var response = await _client.SendAsync(request, cts?.Token ?? cancel);
 
                         var bodyAsStr = await HttpSenderHelper.ExtractBodyAsync(response.Content);

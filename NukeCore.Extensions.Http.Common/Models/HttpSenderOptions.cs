@@ -8,6 +8,8 @@ namespace NukeCore.Extensions.Http.Common.Models
         private const int DEF_TIMEOUT_SEC = 60;
         private static readonly TimeSpan DefTimeout = TimeSpan.FromSeconds(DEF_TIMEOUT_SEC);
 
+        //public Guid InstanceUuid { get; }
+
         public TimeSpan RequestTimeout { get; set; } = DefTimeout;
         public bool ValidateErrorsInResponse { get; set; } = true;
         public JsonParseSettings JsonParseSettings { get; set; } = new JsonParseSettings();

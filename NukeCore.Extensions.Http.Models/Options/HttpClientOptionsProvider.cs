@@ -5,11 +5,14 @@ using System.Net.Http.Headers;
 using NukeCore.Extensions.Http.Common.Helpers;
 using NukeCore.Extensions.Http.Common.Models;
 
-namespace NukeCore.Extensions.Http.DependencyInjection
+namespace NukeCore.Extensions.Http.Models.Options
 {
 
     public class HttpClientOptionsProvider
     {
+
+        //private const string CNT_CLIENT_ID = "x-http-client-uuid";
+        //public Guid InstanceUuid { get; }
 
         #region Props
         private Uri _baseAddress;
@@ -25,16 +28,19 @@ namespace NukeCore.Extensions.Http.DependencyInjection
         public HttpSenderOptions SenderOptions { get; private set; }
         public List<MediaTypeWithQualityHeaderValue> AcceptHeaders { get; }
         public CustomHttpHeaders RequestHeaders { get; }
+
         #endregion
 
         public HttpClientOptionsProvider()
         {
+           // InstanceUuid = Guid.NewGuid();
             HasProxy = true;
             HasServerCertificateValidation = true;
             ResponseAutoDecompressionType = DecompressionMethods.None;
 
             AcceptHeaders = new List<MediaTypeWithQualityHeaderValue>();
             RequestHeaders = new CustomHttpHeaders();
+            //RequestHeaders.AddOrUpdate(CNT_CLIENT_ID, InstanceUuid.ToString());
             SenderOptions = new HttpSenderOptions();
         }
 

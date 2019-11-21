@@ -3,7 +3,11 @@ using System.Net.Http;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using NukeCore.Extensions.Http.Models.Factory;
+using NukeCore.Extensions.Http.Models.Options;
+using NukeCore.Extensions.Http.Sender;
+
 
 namespace NukeCore.Extensions.Http.DependencyInjection
 {
@@ -23,7 +27,7 @@ namespace NukeCore.Extensions.Http.DependencyInjection
         /// <exception cref="ArgumentNullException">wrong configuration params</exception>
         public static IServiceCollection AddConfiguredHttpClient<TClient, TImplementation>(this IServiceCollection services, Action<HttpClientOptionsProvider> cfgAction)
             where TClient : class
-            where TImplementation : class, TClient
+            where TImplementation : HttpSenderBase, TClient
         {
             if (cfgAction == null)
                 throw new ArgumentNullException();
@@ -34,10 +38,10 @@ namespace NukeCore.Extensions.Http.DependencyInjection
 
             if (cfg.BaseAddress == null)
                 throw new ArgumentNullException(nameof(cfg.BaseAddress));
-
-            services.AddSingleton(cfg.SenderOptions);
+            
             services.TryAddSingleton<IResponseFactory, ResponseFactory>();
-   
+            services.PutHttpSenderOptionsInPool<TImplementation>(cfg.SenderOptions);
+
             return services
                 .AddHttpClient<TClient, TImplementation>()
                 .ConfigureHttpClient(
