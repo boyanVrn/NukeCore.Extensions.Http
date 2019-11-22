@@ -1,21 +1,23 @@
-﻿using System.Linq;
+﻿using NukeCore.Extensions.Http.Common.Models;
+using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using NukeCore.Extensions.Http.Common.Models;
 
 namespace NukeCore.Extensions.Http.Common.Helpers
 {
     public static class HttpSenderHelper
     {
-        //private const string CNT_CLIENT_ID = "x-http-client-uuid";
+        private const string MtNameAppJson = "application/json";
+        private const string MtNameAppXml = "application/xml";
+        private const string MtNameBytes = "application/octet-stream";
 
         public static void AppendHeaders(this HttpRequestMessage src, CustomHttpHeaders headersEx)
         {
             foreach (var h in headersEx)
             {
                 if (string.IsNullOrEmpty(h.Key) || h.Value == null || !h.Value.Any()) continue;
-                //if (h.Key == CNT_CLIENT_ID) continue;
                 src.Headers.Add(h.Key, h.Value);
             }
         }
@@ -24,15 +26,18 @@ namespace NukeCore.Extensions.Http.Common.Helpers
             ? string.Empty
             : Encoding.UTF8.GetString(await content.ReadAsByteArrayAsync());
 
-        //public static void GetHttpClientId(this HttpRequestMessage src, CustomHttpHeaders headersEx)
-        //{
-        //    foreach (var h in headersEx)
-        //    {
-        //        if (string.IsNullOrEmpty(h.Key) || h.Value == null || !h.Value.Any()) continue;
-        //        if (h.Key == CNT_CLIENT_ID) continue;
-        //        src.Headers.Add(h.Key, h.Value);
-        //    }
-        //}
+        public static ByteArrayContent CreateByteArrayContent(byte[] bytes)
+        {
+            var content = new ByteArrayContent(bytes);
+            content.Headers.ContentType = new MediaTypeHeaderValue(MtNameBytes);
+            return content;
+        }
 
+        public static StringContent CreateStringContent(string str, bool isXml = false)
+        {
+            var content = new StringContent(str, Encoding.UTF8);
+            content.Headers.ContentType = new MediaTypeHeaderValue(isXml ? MtNameAppXml : MtNameAppJson);
+            return content;
+        }
     }
 }

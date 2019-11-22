@@ -1,9 +1,8 @@
 ﻿using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NukeCore.Extensions.Http.Common.Helpers;
 using NukeCore.Extensions.Http.Common.Models;
 using NukeCore.Extensions.Http.Models;
 using NukeCore.Extensions.Http.Models.Base.Resolvers;
@@ -23,7 +22,7 @@ namespace NukeCore.Extensions.Http.Sender
         /// <param name="options">http sender ext params</param>
         /// <param name="responseFactory"></param>
         /// <param name="logger">Microsoft.Extensions.Logging.ILogger</param>
-        protected HttpSenderJson(HttpClient client, HttpSenderOptions options, IResponseFactory responseFactory, ILogger<HttpSenderJson> logger) 
+        protected HttpSenderJson(HttpClient client, HttpSenderOptions options, IResponseFactory responseFactory, ILogger<HttpSenderJson> logger)
             : base(client, options, responseFactory, logger) { }
 
 
@@ -68,21 +67,10 @@ namespace NukeCore.Extensions.Http.Sender
         /// <inheritdoc/>
         protected override HttpContent CreateContent<T>(T body, HttpSenderOptions options)
         {
-            switch (body)
-            {
-                case byte[] bytes:
-                    {
-                        var content = new ByteArrayContent(bytes);
-                        content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-                        return content;
-                    }
-                default:
-                    {
-                        var content = new StringContent(Serialize(body, options), Encoding.UTF8);
-                        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                        return content;
-                    }
-            }
+            if (body is byte[] bytes)
+                return HttpSenderHelper.CreateByteArrayContent(bytes);
+
+            return HttpSenderHelper.CreateStringContent(Serialize(body, options));
         }
     }
 }

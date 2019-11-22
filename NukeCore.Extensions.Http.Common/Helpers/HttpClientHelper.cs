@@ -22,6 +22,5 @@ namespace NukeCore.Extensions.Http.Common.Helpers
             if (src == null) return null;
             return src.AbsoluteUri.EndsWith(Slash) ? src : new Uri(src.AbsoluteUri + Slash);
         }
-
     }
 }

@@ -1,6 +1,4 @@
-﻿using NukeCore.Extensions.Http.Models.Base.Interfaces;
-
-namespace NukeCore.Extensions.Http.Models
+﻿namespace NukeCore.Extensions.Http.Models
 {
     public class RequestBase<T> : IRequest<T>
     {

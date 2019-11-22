@@ -1,12 +1,11 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Logging;
 using NukeCore.Extensions.Http.Models.Factory;
 using NukeCore.Extensions.Http.Models.Options;
 using NukeCore.Extensions.Http.Sender;
+using System;
+using System.Net.Http;
+using System.Threading;
 
 
 namespace NukeCore.Extensions.Http.DependencyInjection
