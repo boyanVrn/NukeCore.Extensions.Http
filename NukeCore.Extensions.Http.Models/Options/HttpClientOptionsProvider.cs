@@ -10,9 +10,7 @@ namespace NukeCore.Extensions.Http.Models.Options
 
     public class HttpClientOptionsProvider
     {
-
-        //private const string CNT_CLIENT_ID = "x-http-client-uuid";
-        //public Guid InstanceUuid { get; }
+        const string CNT_AUTH_HEADER_NAME = "Authorization";
 
         #region Props
         private Uri _baseAddress;
@@ -33,18 +31,21 @@ namespace NukeCore.Extensions.Http.Models.Options
 
         public HttpClientOptionsProvider()
         {
-           // InstanceUuid = Guid.NewGuid();
             HasProxy = true;
             HasServerCertificateValidation = true;
             ResponseAutoDecompressionType = DecompressionMethods.None;
 
             AcceptHeaders = new List<MediaTypeWithQualityHeaderValue>();
             RequestHeaders = new CustomHttpHeaders();
-            //RequestHeaders.AddOrUpdate(CNT_CLIENT_ID, InstanceUuid.ToString());
             SenderOptions = new HttpSenderOptions();
         }
 
         #region Setters methods
+        public void AddBearerTokenAuth(string token)
+        {
+            AddCustomRequestHeader(CNT_AUTH_HEADER_NAME, "Bearer " + token);
+        }
+
         public void AddCredentials(string login, string password)
         {
             Credentials = new NetworkCredential(login, password);
@@ -93,8 +94,8 @@ namespace NukeCore.Extensions.Http.Models.Options
 
         public void SetBaseAddress(string uri)
         {
-            if (string.IsNullOrEmpty(uri))
-                throw new ArgumentNullException(nameof(uri), "Cannot set base address");
+            if (string.IsNullOrWhiteSpace(uri))
+                throw new ArgumentNullException(nameof(uri), "Can't set base address");
 
             BaseAddress = new Uri(uri);
         }
