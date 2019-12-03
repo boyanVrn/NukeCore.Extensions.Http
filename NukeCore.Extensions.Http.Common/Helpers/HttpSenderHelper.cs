@@ -1,8 +1,10 @@
-﻿using NukeCore.Extensions.Http.Common.Models;
+﻿using System;
+using NukeCore.Extensions.Http.Common.Models;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NukeCore.Extensions.Http.Common.Helpers
@@ -38,6 +40,16 @@ namespace NukeCore.Extensions.Http.Common.Helpers
             var content = new StringContent(str, Encoding.UTF8);
             content.Headers.ContentType = new MediaTypeHeaderValue(isXml ? MtNameAppXml : MtNameAppJson);
             return content;
+        }
+
+        public static CancellationTokenSource CreateCancellationTokenSource(TimeSpan timeout, CancellationToken cancel)
+        {
+            if (timeout == Timeout.InfiniteTimeSpan) return null;
+
+            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancel);
+            cts.CancelAfter(timeout);
+
+            return cts;
         }
     }
 }

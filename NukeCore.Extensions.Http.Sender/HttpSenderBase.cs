@@ -182,9 +182,8 @@ namespace NukeCore.Extensions.Http.Sender
                 request.Content = content;
                 request.AppendHeaders(senderHeaders);
 
-                using (var cts = CreateCancellationTokenSource(senderOptions.RequestTimeout, cancel))
+                using (var cts = HttpSenderHelper.CreateCancellationTokenSource(senderOptions.RequestTimeout, cancel))
                 {
-
                     try
                     {
                         _logger.LogDebug($"Request: [{requestType.ToString().ToUpper()}] {uri.AbsoluteUri}");
@@ -213,17 +212,6 @@ namespace NukeCore.Extensions.Http.Sender
                     }
                 }
             }
-        }
-
-        //TODO перенести в хелпер
-        private static CancellationTokenSource CreateCancellationTokenSource(TimeSpan timeout, CancellationToken cancel)
-        {
-            if (timeout == Timeout.InfiniteTimeSpan) return null;
-
-            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancel);
-            cts.CancelAfter(timeout);
-
-            return cts;
         }
 
         private HttpContent DoCreateContent<T>(T body, HttpSenderOptions options)
