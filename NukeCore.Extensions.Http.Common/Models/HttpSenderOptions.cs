@@ -13,24 +13,5 @@ namespace NukeCore.Extensions.Http.Common.Models
         public JsonParseSettings JsonParseSettings { get; set; } = new JsonParseSettings();
         public XmlParseSettings XmlParseSettings { get; set; } = new XmlParseSettings();
         public CustomParams CustomParams { get; set; } = new CustomParams();
-
-        public HttpSenderOptions Clone()
-        {
-            return new HttpSenderOptions
-            {
-                RequestTimeout = RequestTimeout,
-                ValidateErrorsInResponse = ValidateErrorsInResponse,
-                JsonParseSettings = new JsonParseSettings
-                {
-                    Deserializing = JsonParseSettings.Deserializing,
-                    Serializing = JsonParseSettings.Serializing,
-                },
-                XmlParseSettings = new XmlParseSettings
-                {
-                    Serialize = XmlParseSettings.Serialize,
-                    Deserialize = XmlParseSettings.Deserialize
-                }
-            };
-        }
     }
 }
