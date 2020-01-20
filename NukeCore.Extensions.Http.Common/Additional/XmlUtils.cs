@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -11,6 +12,8 @@ namespace NukeCore.Extensions.Http.Common.Additional
             var doc = new XDocument();
 
             if (obj == null) return doc;
+            if (obj is XDocument xDoc) return xDoc;
+            if (obj is XmlDocument xmlDoc) return xmlDoc.ToXDocument();
 
             var xmlSerializer = new XmlSerializer(typeof(T));
             using (var writer = doc.CreateWriter())
@@ -30,6 +33,25 @@ namespace NukeCore.Extensions.Http.Common.Additional
             using (var reader = doc.Root.CreateReader())
             {
                 return (T)xmlSerializer.Deserialize(reader);
+            }
+        }
+
+        public static XmlDocument ToXmlDocument(this XDocument xDocument)
+        {
+            var xmlDocument = new XmlDocument();
+            using (var xmlReader = xDocument.CreateReader())
+            {
+                xmlDocument.Load(xmlReader);
+            }
+            return xmlDocument;
+        }
+
+        public static XDocument ToXDocument(this XmlDocument xmlDocument)
+        {
+            using (var nodeReader = new XmlNodeReader(xmlDocument))
+            {
+                nodeReader.MoveToContent();
+                return XDocument.Load(nodeReader);
             }
         }
 
