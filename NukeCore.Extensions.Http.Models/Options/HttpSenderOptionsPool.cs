@@ -1,10 +1,9 @@
 ﻿using NukeCore.Extensions.Http.Common.Models;
-using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace NukeCore.Extensions.Http.Models.Options
 {
-    public sealed class HttpSenderOptionsPool : Dictionary<string, HttpSenderOptions>, IHttpSenderOptionsPool
+    public sealed class HttpSenderOptionsPool : ConcurrentDictionary<string, HttpSenderOptions>, IHttpSenderOptionsPool
     {
         public void Put<T>(HttpSenderOptions options)
         {
@@ -13,11 +12,11 @@ namespace NukeCore.Extensions.Http.Models.Options
 
         public void Put(string type, HttpSenderOptions options)
         {
-            if (ContainsKey(type))
-                throw new ArgumentOutOfRangeException(
-                    type, $"{nameof(HttpSenderOptionsPool)}.{nameof(Put)}->Already exists in pool");
+            //if (ContainsKey(type))
+            //    throw new ArgumentOutOfRangeException(
+            //        type, $"{nameof(HttpSenderOptionsPool)}.{nameof(Put)}->Already exists in pool");
 
-            Add(type, options ?? new HttpSenderOptions());
+            TryAdd(type, options ?? new HttpSenderOptions());
         }
 
         public HttpSenderOptions Take<T>()
@@ -27,7 +26,7 @@ namespace NukeCore.Extensions.Http.Models.Options
 
         public HttpSenderOptions Take(string key)
         {
-          return TryGetValue(key, out var opt) ? opt : new HttpSenderOptions();
+            return TryGetValue(key, out var opt) ? opt : new HttpSenderOptions();
         }
 
         private HttpSenderOptionsPool() { }
