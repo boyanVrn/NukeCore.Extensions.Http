@@ -87,7 +87,7 @@ namespace NukeCore.Extensions.Http.Sender
             if (obj == null) return string.Empty;
             if (obj is string s) return s;
 
-            var doc = obj is XDocument xDoc ? xDoc : XmlUtils.CastObjToXDocument(obj);
+            var doc = XmlUtils.CastObjToXDocument(obj);
 
             if (options.XmlParseSettings.Serialize.RemoveEmptyElements) XmlUtils.RemoveEmptyElementsFrom(doc);
             if (options.XmlParseSettings.Serialize.RemoveNilElements) doc.RemoveNilElements();
