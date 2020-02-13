@@ -4,7 +4,7 @@
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <LangVersion>7.3</LangVersion>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>0.2.5</Version>
+	  <Version>0.3.0</Version>
 	  <Authors>Boyko Andrey</Authors>
 	  <Product>NukeCore.Extensions.Http</Product>
 	  <Description>Abstract http sender with transport errors handling</Description>
