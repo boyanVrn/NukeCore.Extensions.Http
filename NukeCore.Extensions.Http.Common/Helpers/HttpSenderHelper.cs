@@ -1,11 +1,11 @@
 ﻿using System;
-using NukeCore.Extensions.Http.Common.Models;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NukeCore.Extensions.Http.Models.Settings;
 
 namespace NukeCore.Extensions.Http.Common.Helpers
 {

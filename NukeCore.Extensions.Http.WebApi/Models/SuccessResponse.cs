@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using NukeCore.Extensions.Http.Models.Base.Interfaces;
-using NukeCore.Extensions.Http.Models.Base.Resolvers;
+using NukeCore.Extensions.Monad.Response.Models.Base.Interfaces;
+using NukeCore.Extensions.Monad.Response.Models.Base.Resolvers;
 
 namespace NukeCore.Extensions.Http.WebApi.Models
 {

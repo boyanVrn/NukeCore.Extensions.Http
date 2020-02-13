@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Headers;
 using NukeCore.Extensions.Http.Common.Helpers;
-using NukeCore.Extensions.Http.Common.Models;
+using NukeCore.Extensions.Http.Models.Settings;
 
-namespace NukeCore.Extensions.Http.Models.Options
+namespace NukeCore.Extensions.Http.Common.Options
 {
 
     public class HttpClientOptionsProvider

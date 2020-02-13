@@ -1,6 +1,6 @@
-﻿using NukeCore.Extensions.Http.Common.Models;
+﻿using NukeCore.Extensions.Http.Models.Settings;
 
-namespace NukeCore.Extensions.Http.Models.Options
+namespace NukeCore.Extensions.Http.Common.Options
 {
     public interface IHttpSenderOptionsPool
     {

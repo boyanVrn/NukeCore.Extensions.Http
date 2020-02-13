@@ -1,7 +1,7 @@
-﻿using NukeCore.Extensions.Http.Common.Models;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
+using NukeCore.Extensions.Http.Models.Settings;
 
-namespace NukeCore.Extensions.Http.Models.Options
+namespace NukeCore.Extensions.Http.Common.Options
 {
     public sealed class HttpSenderOptionsPool : ConcurrentDictionary<string, HttpSenderOptions>, IHttpSenderOptionsPool
     {

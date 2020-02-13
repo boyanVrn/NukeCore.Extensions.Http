@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace NukeCore.Extensions.Http.Common.Models
+namespace NukeCore.Extensions.Http.Models.Settings
 {
     public class CustomParams : Dictionary<string, object>
     {

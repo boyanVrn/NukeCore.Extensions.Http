@@ -1,5 +1,5 @@
-﻿using NukeCore.Extensions.Http.Models;
-using NukeCore.Extensions.Http.WebApi.Models.WebApiResponse;
+﻿using NukeCore.Extensions.Http.WebApi.Models.WebApiResponse;
+using NukeCore.Extensions.Monad.Response.Models;
 
 namespace NukeCore.Extensions.Http.WebApi
 {

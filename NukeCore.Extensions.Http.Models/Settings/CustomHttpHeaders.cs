@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net.Http.Headers;
 
-namespace NukeCore.Extensions.Http.Common.Models
+namespace NukeCore.Extensions.Http.Models.Settings
 {
 
     public class CustomHttpHeaders : Dictionary<string, List<string>>

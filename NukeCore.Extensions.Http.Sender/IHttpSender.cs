@@ -1,9 +1,9 @@
-﻿using System;
+﻿using NukeCore.Extensions.Monad.Response.Models;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using NukeCore.Extensions.Http.Common.Models;
-using NukeCore.Extensions.Http.Models;
+using NukeCore.Extensions.Http.Models.Settings;
 
 namespace NukeCore.Extensions.Http.Sender
 {

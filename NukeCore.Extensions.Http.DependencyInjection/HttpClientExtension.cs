@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using NukeCore.Extensions.Http.Models.Factory;
-using NukeCore.Extensions.Http.Models.Options;
 using NukeCore.Extensions.Http.Sender;
 using System;
 using System.Net.Http;
 using System.Threading;
+using NukeCore.Extensions.Http.Common.Options;
+using NukeCore.Extensions.Monad.Response.Factory;
 
 
 namespace NukeCore.Extensions.Http.DependencyInjection

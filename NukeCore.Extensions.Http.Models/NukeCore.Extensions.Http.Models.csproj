@@ -13,11 +13,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NukeCore.Extensions.Monad.Response" Version="0.0.9" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NukeCore.Extensions.Http.Common\NukeCore.Extensions.Http.Common.csproj" />
+    <Folder Include="Settings\" />
   </ItemGroup>
 
   <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">

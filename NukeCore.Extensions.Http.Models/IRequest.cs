@@ -1,4 +1,6 @@
-﻿using NukeCore.Extensions.Http.Models.Base.Interfaces;
+﻿
+
+using NukeCore.Extensions.Monad.Response.Models.Base.Interfaces;
 
 namespace NukeCore.Extensions.Http.Models
 {

@@ -25,6 +25,14 @@
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NukeCore.Extensions.Http.Models\NukeCore.Extensions.Http.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Options\" />
+  </ItemGroup>
+
   <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">
     <Exec Command="dotnet nuget push -k oy2asue4d2ea2i52fatql7e6nuxqtewubntd675swxj2k4 -s https://api.nuget.org/v3/index.json &quot;$(OutputPath)$(PackageId).$(PackageVersion).nupkg&quot;" IgnoreExitCode="true" />
   </Target>

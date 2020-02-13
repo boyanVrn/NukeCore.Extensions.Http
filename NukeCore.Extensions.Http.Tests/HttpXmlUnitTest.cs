@@ -1,8 +1,5 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using NukeCore.Extensions.Http.Common.Models;
-using NukeCore.Extensions.Http.Models.Factory;
-using NukeCore.Extensions.Http.Models.Options;
 using NukeCore.Extensions.Http.Sender;
 using NukeCore.Extensions.Http.Tests.Models;
 using System;
@@ -10,6 +7,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using NukeCore.Extensions.Http.Common.Options;
+using NukeCore.Extensions.Http.Models.Settings;
+using NukeCore.Extensions.Monad.Response.Factory;
 using Xunit;
 
 namespace NukeCore.Extensions.Http.Tests

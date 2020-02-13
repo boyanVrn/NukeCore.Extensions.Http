@@ -1,8 +1,8 @@
-﻿using NukeCore.Extensions.Http.Models;
-using NukeCore.Extensions.Http.Models.Base.Interfaces;
-using NukeCore.Extensions.Http.Models.Base.Resolvers;
-using NukeCore.Extensions.Http.WebApi.Models;
+﻿using NukeCore.Extensions.Http.WebApi.Models;
 using NukeCore.Extensions.Http.WebApi.Models.WebApiResponse;
+using NukeCore.Extensions.Monad.Response.Models;
+using NukeCore.Extensions.Monad.Response.Models.Base.Interfaces;
+using NukeCore.Extensions.Monad.Response.Models.Base.Resolvers;
 
 namespace NukeCore.Extensions.Http.WebApi
 {

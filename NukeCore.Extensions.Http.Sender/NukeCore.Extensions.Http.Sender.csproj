@@ -16,12 +16,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NukeCore.Extensions.Monad.Response" Version="0.0.9" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NukeCore.Extensions.Http.Common\NukeCore.Extensions.Http.Common.csproj" />
     <ProjectReference Include="..\NukeCore.Extensions.Http.Errors\NukeCore.Extensions.Http.Errors.csproj" />
-    <ProjectReference Include="..\NukeCore.Extensions.Http.Models\NukeCore.Extensions.Http.Models.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">

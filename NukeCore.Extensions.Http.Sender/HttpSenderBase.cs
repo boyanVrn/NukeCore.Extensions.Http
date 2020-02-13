@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using NukeCore.Extensions.Http.Common.Helpers;
+using NukeCore.Extensions.Http.Errors;
+using NukeCore.Extensions.Monad.Response.Factory;
+using NukeCore.Extensions.Monad.Response.Models;
+using NukeCore.Extensions.Monad.Response.Models.Base.Resolvers;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using NukeCore.Extensions.Http.Common.Helpers;
-using NukeCore.Extensions.Http.Common.Models;
-using NukeCore.Extensions.Http.Errors;
-using NukeCore.Extensions.Http.Models;
-using NukeCore.Extensions.Http.Models.Base.Resolvers;
-using NukeCore.Extensions.Http.Models.Factory;
+using NukeCore.Extensions.Http.Models.Settings;
 
 namespace NukeCore.Extensions.Http.Sender
 {

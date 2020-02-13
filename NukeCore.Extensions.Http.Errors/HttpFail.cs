@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using NukeCore.Extensions.Http.Models.Base.Resolvers;
+using NukeCore.Extensions.Monad.Response.Models.Base.Resolvers;
 
 namespace NukeCore.Extensions.Http.Errors
 {

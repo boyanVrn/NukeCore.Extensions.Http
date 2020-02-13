@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using NukeCore.Extensions.Http.Common.Models;
-using NukeCore.Extensions.Http.Models.Options;
 using System;
+using NukeCore.Extensions.Http.Common.Options;
+using NukeCore.Extensions.Http.Models.Settings;
 
 namespace NukeCore.Extensions.Http.DependencyInjection
 {
