@@ -2,12 +2,12 @@
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Microsoft.Extensions.Logging;
-using NukeCore.Extensions.Http.Common.Additional;
 using NukeCore.Extensions.Http.Common.Helpers;
 using NukeCore.Extensions.Http.Models.Settings;
 using NukeCore.Extensions.Monad.Response.Factory;
 using NukeCore.Extensions.Monad.Response.Models;
 using NukeCore.Extensions.Monad.Response.Models.Base.Resolvers;
+using NukeCore.Extensions.Shared.Utils;
 
 
 namespace NukeCore.Extensions.Http.Sender

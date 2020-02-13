@@ -17,6 +17,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NukeCore.Extensions.Monad.Response" Version="0.0.9" />
+    <PackageReference Include="NukeCore.Extensions.Shared.Utils" Version="0.0.9" />
   </ItemGroup>
 
   <ItemGroup>
