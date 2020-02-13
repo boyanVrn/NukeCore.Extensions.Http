@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using NukeCore.Extensions.Http.Models.Settings;
+using NukeCore.Extensions.Http.Common.Settings;
 
 namespace NukeCore.Extensions.Http.Common.Options
 {

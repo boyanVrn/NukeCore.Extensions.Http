@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NukeCore.Extensions.Http.Common\NukeCore.Extensions.Http.Common.csproj" />
-    <ProjectReference Include="..\NukeCore.Extensions.Http.Errors\NukeCore.Extensions.Http.Errors.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuildRelease" AfterTargets="Pack" Condition="'$(Configuration)' == 'Release'">

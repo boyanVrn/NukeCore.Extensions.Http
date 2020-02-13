@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Headers;
 using NukeCore.Extensions.Http.Common.Helpers;
-using NukeCore.Extensions.Http.Models.Settings;
+using NukeCore.Extensions.Http.Common.Settings;
 
 namespace NukeCore.Extensions.Http.Common.Options
 {

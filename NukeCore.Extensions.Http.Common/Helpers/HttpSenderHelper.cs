@@ -5,7 +5,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NukeCore.Extensions.Http.Models.Settings;
+using NukeCore.Extensions.Http.Common.Settings;
 
 namespace NukeCore.Extensions.Http.Common.Helpers
 {

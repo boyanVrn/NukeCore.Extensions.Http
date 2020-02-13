@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NukeCore.Extensions.Http.Common.Helpers;
-using NukeCore.Extensions.Http.Models.Settings;
+using NukeCore.Extensions.Http.Common.Settings;
 using NukeCore.Extensions.Monad.Response.Factory;
 using NukeCore.Extensions.Monad.Response.Models;
 using NukeCore.Extensions.Monad.Response.Models.Base.Resolvers;

@@ -3,7 +3,7 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using NukeCore.Extensions.Http.Models.Settings;
+using NukeCore.Extensions.Http.Common.Settings;
 
 namespace NukeCore.Extensions.Http.Sender
 {

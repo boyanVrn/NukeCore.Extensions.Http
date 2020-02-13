@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using NukeCore.Extensions.Http.Common.Options;
-using NukeCore.Extensions.Http.Models.Settings;
+using NukeCore.Extensions.Http.Common.Settings;
 using NukeCore.Extensions.Monad.Response.Factory;
 using Xunit;
 

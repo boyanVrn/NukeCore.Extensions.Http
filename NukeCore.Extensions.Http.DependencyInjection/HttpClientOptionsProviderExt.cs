@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using NukeCore.Extensions.Http.Common.Options;
-using NukeCore.Extensions.Http.Models.Settings;
+using NukeCore.Extensions.Http.Common.Settings;
 
 namespace NukeCore.Extensions.Http.DependencyInjection
 {

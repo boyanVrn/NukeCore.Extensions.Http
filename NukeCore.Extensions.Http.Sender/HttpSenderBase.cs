@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using NukeCore.Extensions.Http.Common.Helpers;
-using NukeCore.Extensions.Http.Errors;
 using NukeCore.Extensions.Monad.Response.Factory;
 using NukeCore.Extensions.Monad.Response.Models;
 using NukeCore.Extensions.Monad.Response.Models.Base.Resolvers;
@@ -9,7 +8,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using NukeCore.Extensions.Http.Models.Settings;
+using NukeCore.Extensions.Http.Common.Settings;
+using NukeCore.Extensions.Http.Models.Errors;
 
 namespace NukeCore.Extensions.Http.Sender
 {

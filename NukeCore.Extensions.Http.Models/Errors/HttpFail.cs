@@ -2,7 +2,7 @@
 using System.Net;
 using NukeCore.Extensions.Monad.Response.Models.Base.Resolvers;
 
-namespace NukeCore.Extensions.Http.Errors
+namespace NukeCore.Extensions.Http.Models.Errors
 {
 
     /// <inheritdoc />
