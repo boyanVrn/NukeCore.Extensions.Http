@@ -13,15 +13,14 @@ namespace NukeCore.Extensions.Http.Sender
     public interface IHttpSender
     {
         /// <summary>
-        /// use in case when request body exists, but response body no needed
+        /// use in case when request body exists, but response body no needed, return maybe error
         /// </summary>
         /// <param name="requestType">request type</param>
         /// <param name="apiMethod">url path</param>
         /// <param name="postedData">request body</param>
         /// <param name="cancel">cancel query token</param>
         /// <returns>void or exception</returns>
-        Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData,
-            CancellationToken cancel = default);
+        Task<IResponse> SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default);
 
         /// <summary>
         /// use in case when request body is not exists, but response body is needed
@@ -31,7 +30,7 @@ namespace NukeCore.Extensions.Http.Sender
         /// <param name="cancel">cancel query token</param>
         /// <typeparam name="T">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
-        Task<IResponse<T>> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, CancellationToken cancel = default) 
+        Task<IResponse<T>> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, CancellationToken cancel = default)
             where T : new();
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace NukeCore.Extensions.Http.Sender
         /// <param name="cancel">cancel query token</param>
         /// <typeparam name="T">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
-        Task<IResponse<T>> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default) 
+        Task<IResponse<T>> SendHttpRequest<T>(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default)
             where T : new();
 
         /// <summary>
@@ -57,7 +56,7 @@ namespace NukeCore.Extensions.Http.Sender
         /// <typeparam name="TReq">request serialization type</typeparam>
         /// <typeparam name="TResp">responce deserialize type</typeparam>
         /// <returns>class or exception</returns>
-        Task<IResponse<TResp>> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body, 
+        Task<IResponse<TResp>> SendHttpRequest<TReq, TResp>(HttpMethod requestType, string apiMethod, TReq body,
             CancellationToken cancel = default, Action<HttpSenderOptions, CustomHttpHeaders> cfgAction = default)
                 where TResp : new();
 

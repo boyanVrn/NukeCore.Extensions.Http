@@ -9,6 +9,11 @@ namespace NukeCore.Extensions.Http.WebApi
 
     public class WebApiResponseFactory : IWebApiResponseFactory
     {
+        public IWebApiResponse Ok()
+        {
+            return new SuccessResponse<object>(new ApiOk<object>(new {}));
+        }
+
         public IWebApiResponse Ok<T>(T data)
         {
             return new SuccessResponse<T>(new ApiOk<T>(data));

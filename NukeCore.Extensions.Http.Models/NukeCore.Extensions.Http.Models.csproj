@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <LangVersion>7.3</LangVersion>
-    <Version>0.3.5</Version>
+    <Version>0.3.8</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Boyko Andrey</Authors>
     <Product>NukeCore.Extensions.Http</Product>
@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="NukeCore.Extensions.Monad.Response" Version="0.1.6" />
+    <PackageReference Include="NukeCore.Extensions.Monad.Response" Version="0.1.8" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 

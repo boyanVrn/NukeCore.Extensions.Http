@@ -4,7 +4,7 @@
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
 	  <LangVersion>7.3</LangVersion>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Version>0.3.5</Version>
+	  <Version>0.3.8</Version>
 	  <Authors>Boyko Andrey</Authors>
 	  <Product>NukeCore.Extensions.Http</Product>
 	  <Description>Abstract http sender with transport errors handling</Description>
@@ -16,7 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="NukeCore.Extensions.Monad.Response" Version="0.1.6" />
+    <PackageReference Include="NukeCore.Extensions.Monad.Response" Version="0.1.8" />
     <PackageReference Include="NukeCore.Extensions.Shared.Utils" Version="0.1.1" />
   </ItemGroup>
 

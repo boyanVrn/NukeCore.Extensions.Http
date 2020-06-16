@@ -5,6 +5,7 @@ namespace NukeCore.Extensions.Http.WebApi
 {
     public interface IWebApiResponseFactory
     {
+        IWebApiResponse Ok();
         IWebApiResponse Ok<T>(T data);
         IWebApiResponse Error<T>(T error);
         IWebApiResponse CreateFrom<T>(IResponse<T> response);

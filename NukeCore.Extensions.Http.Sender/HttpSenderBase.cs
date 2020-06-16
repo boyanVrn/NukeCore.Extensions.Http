@@ -98,8 +98,11 @@ namespace NukeCore.Extensions.Http.Sender
         /// <param name="postedData"></param>
         /// <param name="cancel"></param>
         /// <returns></returns>
-        public async Task SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default)
-            => await SendHttpRequest<object, object>(requestType, apiMethod, postedData, cancel);
+        public async Task<IResponse> SendHttpRequest(HttpMethod requestType, string apiMethod, object postedData, CancellationToken cancel = default)
+        {
+            var result = await SendHttpRequest<object, object>(requestType, apiMethod, postedData, cancel);
+            return result.IsSuccess ? ResponseFactory.CreateSuccess() : ResponseFactory.CreateFault(result.Error);
+        }
 
 
         /// <summary>
